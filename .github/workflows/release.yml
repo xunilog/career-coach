@@ -66,6 +66,16 @@ jobs:
       - name: Install npm dependencies
         run: npm ci
 
+      - name: Sync version from package.json to Tauri
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "Syncing version: $VERSION"
+          # Update tauri.conf.json
+          tmp=$(mktemp)
+          jq --arg v "$VERSION" '.version = $v' src-tauri/tauri.conf.json > "$tmp" && mv "$tmp" src-tauri/tauri.conf.json
+          # Update Cargo.toml (first occurrence of version = "...")
+          sed -i "0,/^version = \".*\"/s//version = \"$VERSION\"/" src-tauri/Cargo.toml
+
       - name: Build frontend
         run: npm run build
 
