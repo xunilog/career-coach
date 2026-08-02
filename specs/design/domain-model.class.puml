@@ -1,0 +1,126 @@
+@startuml
+title Domain Model — Career Coach Job Search Module
+
+class SearchDefinition {
+    +String id
+    +String title
+    +String location
+    +String schedule
+    +String created_at
+    +String last_run_at
+    +String filters (JSON)
+}
+
+class JobPosting {
+    +String id
+    +String search_id
+    +String title
+    +String company
+    +String location
+    +String salary
+    +String fit
+    +String source
+    +String apply_url
+    +String found_at
+    +String status
+    +String description
+    +String notes
+    +Integer is_new
+}
+
+class CompanyResearch {
+    +String job_id
+    +String overview
+    +String culture
+    +String news
+    +String keyPeople
+    +String market
+    +String generated_at
+}
+
+class AdaptedResume {
+    +String job_id
+    +String content
+    +Number ats_score
+    +Number human_score
+    +Integer iterations
+    +String generated_at
+    +String updated_at
+}
+
+class CoverLetter {
+    +String job_id
+    +String content
+    +Number ats_score
+    +Number human_score
+    +Integer iterations
+    +String generated_at
+    +String updated_at
+}
+
+class CareerProfile {
+    +Integer id = 1
+    +String dominant_color
+    +String secondary_color
+    +String disc_profile
+    +String career_drivers (JSON array)
+    +String work_style_preferences (JSON array)
+    +String core_values (JSON array)
+    +String risk_appetite
+    +String risk_profile_details
+    +String change_tolerance_notes
+    +String raw_insights
+    +String markdown
+}
+
+class WorkExperience {
+    +String id
+    +String company
+    +String title
+    +String start_date
+    +String end_date
+    +String sector
+    +Integer team_size
+    +String budget_managed
+    +Integer direct_reports
+    +String raci_roles (JSON array)
+    +String key_projects (JSON array)
+    +String quantified_achievements (JSON array)
+    +String skills_demonstrated (JSON array)
+    +String challenges
+    +String reason_for_leaving
+    +String raw_notes
+}
+
+class ResumeDraft {
+    +Integer id = 1
+    +String target_job
+    +String draft
+}
+
+class StatusHistory {
+    +Integer id
+    +String job_id
+    +String from_status
+    +String to_status
+    +String notes
+    +String changed_at
+}
+
+class Conversation {
+    +String thread_id
+    +String title
+    +String type
+    +String created_at
+    +String updated_at
+}
+
+CareerProfile "1" --> "*" WorkExperience : precedes
+CareerProfile "1" --> "1" ResumeDraft : informs
+SearchDefinition "1" --> "*" JobPosting : finds
+JobPosting "1" --> "0..1" CompanyResearch : has
+JobPosting "1" --> "0..1" AdaptedResume : has
+JobPosting "1" --> "0..1" CoverLetter : has
+JobPosting "1" --> "*" StatusHistory : tracks
+
+@enduml

@@ -1,0 +1,64 @@
+@startuml
+title Stream Event Types
+
+class StartEvent {
+    +type: "start"
+}
+
+class ChunkEvent {
+    +type: "chunk"
+    +content: string
+}
+
+class PhaseEvent {
+    +type: "phase"
+    +phase: "writing" | "scoring" | "reviewing" | "done"
+}
+
+class ScoreEvent {
+    +type: "score"
+    +atsScore: number
+    +humanScore: number | null
+    +iteration: number
+}
+
+class FeedbackEvent {
+    +type: "feedback"
+    +feedback: string[]
+}
+
+class PersonalizationEvent {
+    +type: "personalization"
+    +suggestions: string[]
+}
+
+class DoneEvent {
+    +type: "done"
+    +result: GenerationResult
+}
+
+class ErrorEvent {
+    +type: "error"
+    +message: string
+}
+
+abstract class StreamEvent {
+    +type: string
+}
+
+StreamEvent <|-- StartEvent
+StreamEvent <|-- ChunkEvent
+StreamEvent <|-- PhaseEvent
+StreamEvent <|-- ScoreEvent
+StreamEvent <|-- FeedbackEvent
+StreamEvent <|-- PersonalizationEvent
+StreamEvent <|-- DoneEvent
+StreamEvent <|-- ErrorEvent
+
+note right of FeedbackEvent
+    Code uses separate arrays:
+    atsFeedback and humanFeedback
+    rather than a source field.
+end note
+
+@enduml

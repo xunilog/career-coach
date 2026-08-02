@@ -1,0 +1,27 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Container Diagram — Career Coach Job Search Module
+
+Person(user, "User", "Job seeker")
+
+System_Boundary(electronApp, "Electron Desktop Application") {
+    Container(renderer, "Renderer Process", "React + Mantine UI + TanStack Query + Zustand", "User interface: nav panel, inbox, search results, job detail editor with score panel, chat")
+    Container(main, "Main Process", "Node.js + Electron IPC", "IPC handlers, job search scheduler, ts-jobspy client, LLM provider, LangGraph graphs, database access")
+    ContainerDb(dataStore, "Data Store", "better-sqlite3 (WAL mode)", "Persists searches, jobs, research, adapted resumes, cover letters, status history, career profile, work experiences, resume draft, LangGraph checkpoints, and conversations")
+}
+
+System_Ext(indeed, "Indeed", "Job board via ts-jobspy")
+System_Ext(linkedin, "LinkedIn", "Job board via ts-jobspy")
+System_Ext(mistralAI, "Mistral AI", "LLM Provider")
+
+Rel(user, renderer, "Interacts with UI", "Electron window")
+Rel(renderer, main, "IPC invoke / stream events", "Electron IPC (handle/on+send)")
+Rel(main, dataStore, "Reads and writes all structured data", "better-sqlite3 (WAL mode)")
+Rel(main, indeed, "Scrapes job postings", "HTTPS via ts-jobspy")
+Rel(main, linkedin, "Scrapes job postings", "HTTPS via ts-jobspy")
+Rel(main, mistralAI, "LLM calls for scoring, research, Writer→Scorer→Reviewer pipeline, coaching", "HTTPS/API")
+
+@enduml

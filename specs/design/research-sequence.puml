@@ -1,0 +1,38 @@
+@startuml
+title Company Research Sequence — Simple LLM Call
+
+actor User
+participant "Job Detail View" as UI
+participant "TanStack Query" as TQ
+participant "IPC Main" as IPC
+participant "Company Researcher" as Agent
+participant "Mistral LLM" as LLM
+database "SQLite" as DB
+
+User -> UI : Click "Research Company"
+UI -> TQ : useMutation: researchCompany(searchId, jobId)
+TQ -> IPC : invoke("company-research:stream:<id>")
+IPC --> TQ : { type: "start" }
+
+IPC -> Agent : start(company, jobDescription)
+
+Agent -> LLM : prompt: "Research {{company}}: overview, culture, recent news,\nkey people, product & market position"
+
+note right of LLM : Simple LLM invocation.\nNo native web search enabled.\nLLM generates research from training data.
+
+loop Streaming (iterates over result sections after LLM responds)
+    LLM --> Agent : complete response (5 sections)
+    Agent --> IPC : { type: "chunk", section: "overview", content: "..." }
+    IPC --> TQ : stream → UI
+    Agent --> IPC : { type: "chunk", section: "culture", content: "..." }
+    Agent --> IPC : { type: "chunk", section: "news", content: "..." }
+    Agent --> IPC : { type: "chunk", section: "keyPeople", content: "..." }
+    Agent --> IPC : { type: "chunk", section: "market", content: "..." }
+end
+
+Agent -> DB : UPSERT INTO research (job_id, overview, culture, news, key_people, market)
+Agent --> IPC : { type: "done" }
+IPC --> TQ : done → enable resume/cover buttons
+TQ --> UI : show complete research
+
+@enduml

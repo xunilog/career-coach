@@ -1,0 +1,61 @@
+@startuml
+title Job Search Execution Sequence
+
+actor User
+participant "UI" as UI
+participant "TanStack Query" as TQ
+participant "IPC Main" as IPC
+participant "Job Scheduler" as Scheduler
+participant "JobSpy Client" as Client
+participant "Indeed / LinkedIn" as API
+participant "Job Scorer" as Scorer
+participant "Mistral LLM" as LLM
+database "SQLite" as DB
+
+User -> UI : Click "Search All"
+UI -> TQ : useMutation: runSearchAll()
+TQ -> IPC : invoke("job-search:run-all")
+
+loop For each search (2s delay)
+    IPC -> Scheduler : dequeue next search
+    Scheduler --> IPC : { type: "search-start", current, name }
+
+    Scheduler -> DB : read search definition
+    DB --> Scheduler : SearchDefinition
+    Scheduler -> Client : executeSearch(search)
+
+    Client -> API : scrape job listings
+    API --> Client : { totalCount, jobs[] }
+
+    loop For each page / batch
+        alt Rate limited / blocked
+            API --> Client : error
+            Client -> Client : exponential backoff + retry
+            Client -> API : retry
+        else Success
+            API --> Client : { jobs[] }
+        end
+        Client -> DB : UPSERT new jobs (is_new=1), UPDATE existing
+        Scheduler --> IPC : { type: "search-page", current, page, newJobs }
+        IPC --> TQ : stream progress
+    end
+
+    Scheduler -> Scorer : scoreBatch(unscoredJobs)
+    loop For each batch of 10
+        Scorer -> DB : read career_profile (profile)
+        DB --> Scorer : profile
+        Scorer -> LLM : prompt(profile, 10 job summaries)
+        LLM --> Scorer : [{ jobId, fit, reason }]
+        Scorer -> DB : UPDATE jobs SET fit = ? WHERE id = ?
+    end
+
+    Scheduler -> DB : UPDATE searches SET last_run_at = now()
+    Scheduler --> IPC : { type: "search-done", current, totalHits, newHits }
+    IPC --> TQ : stream
+end
+
+IPC --> TQ : { type: "done" }
+TQ -> TQ : invalidate queries
+TQ --> UI : refresh inbox + results views
+
+@enduml

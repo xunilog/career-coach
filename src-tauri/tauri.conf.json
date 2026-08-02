@@ -1,0 +1,35 @@
+{
+  "$schema": "https://raw.githubusercontent.com/nicedoc/schemas/master/tauri-conf.schema.json",
+  "productName": "Career Coach",
+  "version": "3.0.0",
+  "identifier": "com.career-coach.app",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build",
+    "devUrl": "http://localhost:5173",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Career Coach",
+        "width": 1280,
+        "height": 860,
+        "minWidth": 960,
+        "minHeight": 640,
+        "backgroundColor": "#0a0a1a"
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' ws: http://localhost:* https:; img-src 'self' data: https:"
+    }
+  },
+  "plugins": {
+    "sql": {
+      "preload": ["sqlite:career-coach.db"]
+    },
+    "shell": {
+      "open": true
+    }
+  }
+}

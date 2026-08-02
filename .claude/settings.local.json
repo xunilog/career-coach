@@ -1,0 +1,49 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(npx tsc *)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:www.npmjs.com)",
+      "Bash(npx vitest *)",
+      "Bash(java -jar ${CLAUDE_PROJECT_DIR}/plantuml.jar *)",
+      "Bash(java *)",
+      "WebFetch(domain:plantuml.com)",
+      "Bash(npx oxlint *)",
+      "Bash(npx oxfmt *)",
+      "WebFetch(domain:v2.tauri.app)",
+      "Bash(npx tauri *)",
+      "Bash(cargo check *)",
+      "Bash(sqlite3 \"/Users/yanncombarnous/Library/Application Support/com.career-coach.app/career-coach.db\" \"SELECT thread_id, title, type, created_at, updated_at FROM conversations ORDER BY updated_at DESC;\")",
+      "Bash(sqlite3 \"/Users/yanncombarnous/Library/Application Support/com.career-coach.app/career-coach.db\" \"SELECT COUNT\\(*\\) AS count FROM conversations;\")"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx oxfmt 2>&1 && npx oxlint 2>&1 || true"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "java -jar ${CLAUDE_PROJECT_DIR}/plantuml.jar --check-before-run \"${tool_input.file_path}\" 2>&1 || echo \"PLANTUML_LINT_ERROR: ${tool_input.file_path}\"",
+            "if": "Write|Edit(*.puml)"
+          }
+        ]
+      }
+    ]
+  }
+}

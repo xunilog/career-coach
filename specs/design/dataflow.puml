@@ -1,0 +1,76 @@
+@startuml
+title Full Stack Data Flow
+
+rectangle "Renderer Process" as Renderer {
+    [React Components] as UI
+    [TanStack Query] as TQ
+    [Zustand Stores\n(careerStore, jobSearchStore)] as ZS
+    UI --> TQ
+    UI --> ZS
+    TQ --> ZS
+}
+
+rectangle "IPC Layer" as IPC_Layer {
+    [ipcMain.handle\n(Request/Response)] as HANDLE
+    [event.sender.send\n(Streaming)] as STREAM
+}
+
+rectangle "Main Process" as Main {
+    [IPC Handlers] as IPC
+    [Job Scheduler\n(setInterval 60s)] as SCHED
+    [JobSpy Client\n(ts-jobspy)] as HC
+    [Job Scorer] as SCORER
+    [Company Researcher] as RESEARCH
+    [Generation Graph\n(Graph 2)] as GEN
+    [Profile Graph\n(Graph 1)] as PROF
+    [LLM Provider\n(getModel)] as LLMP
+    [Database Service\n(better-sqlite3)] as DB
+    [PDF Exporter] as PDF
+    [SQL Checkpointer] as CHK
+}
+
+rectangle "Storage" as Storage {
+    database "career-coach.db\n(WAL mode)" as SQLITE
+}
+
+rectangle "External" as External {
+    [Indeed] as INDEED
+    [LinkedIn] as LINKEDIN
+    [Mistral AI] as MISTRAL
+}
+
+TQ <--> HANDLE : invoke
+TQ <-- STREAM : on+send
+
+IPC --> SCHED
+IPC --> HC
+IPC --> SCORER
+IPC --> RESEARCH
+IPC --> GEN
+IPC --> PROF
+IPC --> DB
+IPC --> PDF
+
+SCHED --> HC : runs searches
+SCHED --> DB : queries due searches
+
+HC --> INDEED : scrape
+HC --> LINKEDIN : scrape
+
+SCORER --> LLMP : getModel
+RESEARCH --> LLMP : getModel
+GEN --> LLMP : getModel
+PROF --> LLMP : getModel
+LLMP --> MISTRAL : API calls
+
+SCORER --> DB : writes scores
+RESEARCH --> DB : writes research
+GEN --> DB : writes documents
+PROF --> CHK : persists state
+GEN --> CHK : persists state
+CHK --> DB
+
+DB <--> SQLITE
+PDF --> DB : reads content
+
+@enduml

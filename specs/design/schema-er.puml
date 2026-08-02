@@ -1,0 +1,160 @@
+@startuml
+title Database Schema — career-coach.db
+
+entity "searches" as searches {
+    * id : TEXT PK
+    --
+    * title : TEXT NOT NULL
+    * location : TEXT NOT NULL
+    * schedule : TEXT NOT NULL DEFAULT 'manual'
+    * created_at : TEXT
+    * last_run_at : TEXT
+    * filters : TEXT NOT NULL DEFAULT '{}' (JSON)
+}
+
+entity "jobs" as jobs {
+    * id : TEXT PK
+    --
+    * search_id : TEXT FK → searches
+    * title : TEXT NOT NULL
+    * company : TEXT NOT NULL
+    * location : TEXT NULLABLE
+    * salary : TEXT NULLABLE
+    * fit : TEXT NULLABLE
+    * source : TEXT DEFAULT 'hiring.cafe'
+    * apply_url : TEXT NULLABLE
+    * found_at : TEXT
+    * status : TEXT NOT NULL DEFAULT '--'
+    * description : TEXT NULLABLE
+    * notes : TEXT NULLABLE
+    * is_new : INTEGER NOT NULL DEFAULT 1
+}
+
+entity "research" as research {
+    * job_id : TEXT PK FK → jobs
+    --
+    overview : TEXT NULLABLE
+    culture : TEXT NULLABLE
+    news : TEXT NULLABLE
+    key_people : TEXT NULLABLE
+    recruiters : TEXT NULLABLE
+    market : TEXT NULLABLE
+    relevance : TEXT NULLABLE
+    generated_at : TEXT NULLABLE
+}
+
+entity "adapted_resumes" as adapted_resumes {
+    * job_id : TEXT PK FK → jobs
+    --
+    content : TEXT NULLABLE
+    ats_score : REAL NULLABLE
+    human_score : REAL NULLABLE
+    iterations : INTEGER NULLABLE
+    generated_at : TEXT NULLABLE
+    updated_at : TEXT NULLABLE
+}
+
+entity "cover_letters" as cover_letters {
+    * job_id : TEXT PK FK → jobs
+    --
+    content : TEXT NULLABLE
+    ats_score : REAL NULLABLE
+    human_score : REAL NULLABLE
+    iterations : INTEGER NULLABLE
+    generated_at : TEXT NULLABLE
+    updated_at : TEXT NULLABLE
+}
+
+entity "status_history" as status_history {
+    * id : INTEGER PK AUTOINCREMENT
+    --
+    * job_id : TEXT FK → jobs
+    from_status : TEXT NULLABLE
+    to_status : TEXT NULLABLE
+    notes : TEXT NULLABLE
+    changed_at : TEXT
+}
+
+entity "langgraph_checkpoints" as langgraph_checkpoints {
+    * thread_id : TEXT PK
+    * checkpoint_ns : TEXT PK DEFAULT ''
+    * checkpoint_id : TEXT PK
+    --
+    parent_checkpoint_id : TEXT NULLABLE
+    type : TEXT NULLABLE
+    checkpoint : BLOB NULLABLE
+    metadata : BLOB NULLABLE
+    created_at : TEXT NULLABLE
+}
+
+entity "langgraph_writes" as langgraph_writes {
+    * thread_id : TEXT PK
+    * checkpoint_ns : TEXT PK
+    * checkpoint_id : TEXT PK
+    * task_id : TEXT PK
+    * idx : INTEGER PK
+    --
+    channel : TEXT
+    value : TEXT NULLABLE
+    created_at : TEXT NULLABLE
+}
+
+entity "conversations" as conversations {
+    * thread_id : TEXT PK
+    --
+    title : TEXT DEFAULT 'New Chat'
+    type : TEXT DEFAULT 'general'
+    created_at : TEXT NULLABLE
+    updated_at : TEXT NULLABLE
+}
+
+entity "career_profile" as career_profile {
+    * id : INTEGER PK
+    --
+    dominant_color : TEXT DEFAULT 'unknown'
+    secondary_color : TEXT NULLABLE
+    disc_profile : TEXT NULLABLE
+    career_drivers : TEXT DEFAULT '[]' (JSON)
+    work_style_preferences : TEXT DEFAULT '[]' (JSON)
+    core_values : TEXT DEFAULT '[]' (JSON)
+    risk_appetite : TEXT DEFAULT 'unknown'
+    risk_profile_details : TEXT DEFAULT ''
+    change_tolerance_notes : TEXT DEFAULT ''
+    raw_insights : TEXT DEFAULT ''
+    markdown : TEXT DEFAULT ''
+}
+
+entity "work_experiences" as work_experiences {
+    * id : TEXT PK
+    --
+    company : TEXT
+    title : TEXT
+    start_date : TEXT DEFAULT ''
+    end_date : TEXT DEFAULT 'present'
+    sector : TEXT DEFAULT ''
+    team_size : INTEGER NULLABLE
+    budget_managed : TEXT NULLABLE
+    direct_reports : INTEGER NULLABLE
+    raci_roles : TEXT DEFAULT '[]' (JSON)
+    key_projects : TEXT DEFAULT '[]' (JSON)
+    quantified_achievements : TEXT DEFAULT '[]' (JSON)
+    skills_demonstrated : TEXT DEFAULT '[]' (JSON)
+    challenges : TEXT DEFAULT ''
+    reason_for_leaving : TEXT NULLABLE
+    raw_notes : TEXT DEFAULT ''
+}
+
+entity "resume_draft" as resume_draft {
+    * id : INTEGER PK
+    --
+    target_job : TEXT DEFAULT ''
+    draft : TEXT DEFAULT ''
+}
+
+searches ||--o{ jobs : "search_id FK (CASCADE DELETE)"
+jobs ||--o| research : "job_id FK (CASCADE DELETE)"
+jobs ||--o| adapted_resumes : "job_id FK (CASCADE DELETE)"
+jobs ||--o| cover_letters : "job_id FK (CASCADE DELETE)"
+jobs ||--o{ status_history : "job_id FK (CASCADE DELETE)"
+
+@enduml

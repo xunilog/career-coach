@@ -1,0 +1,23 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title System Context Diagram — Career Coach Job Search Module
+
+Person(user, "User", "Job seeker using the Career Coach desktop app")
+
+System_Boundary(careerCoach, "Career Coach") {
+    System(jobSearch, "Job Search Module", "Electron desktop application that searches, scores, and manages job postings, and generates tailored resumes and cover letters via a Writer→Scorer→Reviewer AI pipeline")
+}
+
+System_Ext(indeed, "Indeed", "Job board scraped via ts-jobspy")
+System_Ext(linkedin, "LinkedIn", "Job board scraped via ts-jobspy")
+System_Ext(mistralAI, "Mistral AI", "Large language model — handles scoring, research, writing, document generation, and coaching conversations")
+
+Rel(user, jobSearch, "Defines searches, views results, edits documents, re-scores", "Electron UI")
+Rel(jobSearch, indeed, "Scrapes job postings", "HTTPS via ts-jobspy")
+Rel(jobSearch, linkedin, "Scrapes job postings", "HTTPS via ts-jobspy")
+Rel(jobSearch, mistralAI, "Scores jobs, generates research, runs Writer→Scorer→Reviewer pipeline, coaching chat", "HTTPS/API")
+
+@enduml

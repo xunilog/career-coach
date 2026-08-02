@@ -1,0 +1,125 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: "Release title"
+        required: true
+        type: string
+      issue_numbers:
+        description: "Issue numbers (comma-separated, e.g. #12, #34)"
+        required: false
+        type: string
+        default: ""
+      pr_number:
+        description: "Associated PR number (e.g. #56)"
+        required: false
+        type: string
+        default: ""
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            ext: msi
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            ext: dmg
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          target: ${{ matrix.target }}
+
+      - name: Cache Cargo registry
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            src-tauri/target
+          key: ${{ runner.os }}-cargo-${{ matrix.target }}-${{ hashFiles('src-tauri/Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-${{ matrix.target }}-
+
+      - name: Install system dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: brew install openssl
+
+      - name: Install system dependencies (Windows)
+        if: runner.os == 'Windows'
+        run: choco install openssl -y
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Install Tauri CLI
+        run: npm install -g @tauri-apps/cli
+
+      - name: Build Tauri app
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: cargo tauri build --target ${{ matrix.target }} --bundles ${{ matrix.ext }}
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.target }}
+          path: src-tauri/target/${{ matrix.target }}/release/bundle/
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: build-*
+          path: artifacts
+          merge-multiple: true
+
+      - name: Build release body
+        id: body
+        run: |
+          body="${{ inputs.title }}"
+          if [ -n "${{ inputs.issue_numbers }}" ]; then
+            body="${body}\n\nIssues: ${{ inputs.issue_numbers }}"
+          fi
+          if [ -n "${{ inputs.pr_number }}" ]; then
+            body="${body}\n\nPR: ${{ inputs.pr_number }}"
+          fi
+          {
+            echo "body<<EOF"
+            echo -e "$body"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Display artifact structure
+        run: find artifacts -type f -ls
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ inputs.title }}
+          body: ${{ steps.body.outputs.body }}
+          files: artifacts/**/*
+          draft: false
+          prerelease: false

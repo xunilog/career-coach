@@ -1,0 +1,80 @@
+@startuml
+title Generation Pipeline — Writer→Scorer→Reviewer Sequence
+
+actor User
+participant "Job Detail View" as UI
+participant "TanStack Query" as TQ
+participant "IPC Main" as IPC
+participant "Writer Agent" as Writer
+participant "Scorer Agent (ATS)" as Scorer
+participant "Reviewer Agent (Humanizer)" as Reviewer
+participant "Mistral LLM" as LLM
+database "SQLite" as DB
+
+User -> UI : Click "Generate Resume"
+UI -> TQ : useMutation: generateResume(searchId, jobId)
+TQ -> IPC : invoke("document:resume:stream:<id>")
+IPC --> TQ : { type: "start" }
+
+== ITERATION 1 (Both Scorer AND Reviewer evaluate) ==
+
+IPC -> DB : read career_profile, work_experiences, resume_draft
+IPC -> DB : read jobs.description, research.*
+IPC -> Writer : start(GenerationState)
+
+Writer -> LLM : generate draft from inputs
+LLM --> Writer : draft (streaming)
+Writer --> IPC : { type: "chunk", content }
+IPC --> TQ : stream chunks → UI updates editor
+
+IPC -> Scorer : evaluate(draft, jobDescription)
+Scorer -> LLM : score ATS match (keyword, quals, format, seniority)
+LLM --> Scorer : { atsScore: 78, passed: false, feedback }
+Scorer --> IPC : { type: "score", atsScore: 78 }
+Scorer --> IPC : { type: "feedback", feedback: [...] }
+IPC --> TQ : score + scorer feedback → UI panel
+
+IPC -> Reviewer : evaluate(draft)
+Reviewer -> LLM : detect AI tells, rate naturalness
+LLM --> Reviewer : { humanScore: 62, passed: false, feedback, suggestions }
+Reviewer --> IPC : { type: "score", humanScore: 62 }
+Reviewer --> IPC : { type: "feedback", feedback: [...] }
+Reviewer --> IPC : { type: "personalization", suggestions: [...] }
+IPC --> TQ : score + reviewer feedback + suggestions → UI
+
+note right of Writer
+  Both Scorer AND Reviewer
+  evaluate every iteration.
+  Combined feedback routes
+  to Writer for next iteration
+  if either score is below threshold.
+end note
+
+== ITERATION 2 (Writer revises with combined feedback) ==
+
+IPC -> Writer : regenerate(draft, scorerFeedback, reviewerFeedback)
+Writer -> LLM : regenerate with all feedback
+LLM --> Writer : updated draft (streaming)
+Writer --> IPC : { type: "chunk", content }
+IPC --> TQ : stream chunks
+
+IPC -> Scorer : evaluate(updatedDraft, jobDescription)
+Scorer -> LLM : re-score ATS match
+LLM --> Scorer : { atsScore: 92, passed: true }
+Scorer --> IPC : { type: "score", atsScore: 92, iteration: 2 }
+
+IPC -> Reviewer : evaluate(updatedDraft)
+Reviewer -> LLM : re-check AI tells
+LLM --> Reviewer : { humanScore: 85, passed: true, suggestions }
+Reviewer --> IPC : { type: "score", humanScore: 85, iteration: 2 }
+Reviewer --> IPC : { type: "personalization", suggestions: [...] }
+IPC --> TQ : scores + suggestions → UI
+
+== COMPLETE (both thresholds passed) ==
+
+IPC -> DB : INSERT OR REPLACE INTO adapted_resumes (content + scores)
+IPC --> TQ : { type: "done", result: { atsScore: 92, humanScore: 85 } }
+TQ --> UI : show final document + scores
+UI --> User : Resume ready — ATS 92%, AI Detection Low
+
+@enduml

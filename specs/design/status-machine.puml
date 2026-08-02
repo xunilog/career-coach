@@ -1,0 +1,64 @@
+@startuml
+title Job Application Status State Machine
+
+[*] --> NoStatus : New job discovered (status='--')
+
+NoStatus --> Saved : User saves job
+NoStatus --> Archived : User manually archives
+
+Saved --> Applied : User submits application
+Saved --> Archived : User manually archives
+Saved --> NoStatus : User resets status
+
+Applied --> Interview : Recruiter responds
+Applied --> Rejected : Application rejected
+Applied --> Archived : User manually archives
+
+Interview --> Offer : Pass interview
+Interview --> Rejected : Rejected after interview
+Interview --> Archived : User manually archives
+
+Offer --> Archived : Offer accepted or expires
+Rejected --> Archived : User manually archives
+
+Archived --> Saved : User un-archives
+Archived --> Applied : User un-archives
+Archived --> Interview : User un-archives
+Archived --> NoStatus : User un-archives
+
+note right of NoStatus
+  status = '--'
+  No emoji marker
+end note
+
+note right of Saved
+  status = 'Saved'
+end note
+
+note right of Applied
+  status = 'Applied 📤'
+  Cannot go back to -- or Saved
+end note
+
+note right of Interview
+  status = 'Interview 🤝'
+  Cannot go back to --, Saved, or Applied
+end note
+
+note right of Offer
+  status = 'Offer 🎉'
+  Terminal — can only go to Archived
+end note
+
+note right of Rejected
+  status = 'Rejected ❌'
+  Terminal — can only go to Archived
+end note
+
+note left of Archived
+  Excluded from default results (WHERE status != 'Archived')
+  Not deleted — row preserved with status_history
+  Can transition to ANY status (un-archive)
+end note
+
+@enduml

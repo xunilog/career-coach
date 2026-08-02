@@ -1,0 +1,73 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Component Diagram — Career Coach Job Search Module
+
+Person(user, "User", "Job seeker")
+
+Container_Boundary(mainProcess, "Main Process") {
+    Component(ipcHandlers, "IPC Handlers", "Electron IPC", "Registers handle + on/send channels for all job-search operations")
+    Component(scheduler, "Job Scheduler", "setInterval 60s", "Checks DB for due searches (daily/weekly/monthly), queues execution sequentially with 2s delay. In-progress guard: shared plain object.")
+    Component(jobspyClient, "JobSpy Client", "ts-jobspy", "Scrapes Indeed and LinkedIn. Builds SearchState, handles pagination and retry with exponential backoff.")
+    Component(llmProvider, "LLM Provider", "Factory Abstraction", "Single getModel() factory for all LLM calls. Currently Mistral.")
+    Component(jobScorer, "Job Scorer", "Simple LLM Call", "Batches 10 jobs, scores High/Medium/Low/Skip against profile from SQLite. One prompt → structured JSON.")
+    Component(companyResearcher, "Company Researcher", "Simple LLM Call", "Single LLM prompt generates structured company research (5 sections: overview, culture, news, keyPeople, market). Streams output via IPC.")
+    Component(generationGraph, "Generation Graph", "LangGraph Graph 2", "Writer→Scorer(ATS)→Reviewer(Humanizer) pipeline. Both Scorer AND Reviewer run each iteration. Max 5 iterations. Streams scores + feedback + draft via IPC.")
+    Component(profileGraph, "Profile Graph", "LangGraph Graph 1", "Router→Profile/Experience/Resume for career coaching conversations.")
+    Component(dbService, "Database Service", "better-sqlite3", "All CRUD against career-coach.db. Synchronous API, WAL mode. Owned exclusively by main process. Career profile, work experiences, and resume drafts are SQLite-native.")
+    Component(sqlCheckpointer, "SQL Checkpointer", "LangGraph Checkpointer", "Persists conversation state for both LangGraph graphs. Replaces MemorySaver.")
+    Component(pdfExporter, "PDF Exporter", "Electron printToPDF", "Renders markdown from SQLite to PDF for export")
+}
+
+Container_Boundary(rendererProcess, "Renderer Process") {
+    Component(navPanel, "Nav Panel", "React Component", "Shows search list, inbox aggregate badge, Add Search button")
+    Component(inboxView, "Inbox View", "React Component", "Consolidated table of all new results across searches. Search All button.")
+    Component(resultsView, "Search Results View", "React Component", "Mantine Table from DB. Search Now, Edit, Delete buttons. Sortable, color-coded fit.")
+    Component(jobDetailView, "Job Detail View", "React Component", "Split panel: markdown editor (tabs) + context-aware chat. Score panel below editor. Toolbar with generate/export/re-score actions.")
+    Component(searchModal, "Add/Edit Search Modal", "React Component", "Two-tier form: simple (title, location, schedule) + advanced (filters) collapsible.")
+    Component(jobSearchStore, "Zustand Store", "State Management", "jobSearchStore.ts — active ID, active tab, streaming buffer, modal state, search logs")
+    Component(careerStore, "Zustand Store", "State Management", "careerStore.ts — coaching chat messages, streaming state, conversation history, profile/experience/resume editor state")
+    Component(tanstackQuery, "TanStack Query", "Server State", "useQuery/useMutation for all IPC data: jobs, searches, scores, documents. Caching, dedup, refetch.")
+    Component(scorePanel, "Score Panel", "React Component", "Displays ATS match %, AI detection %, iteration feedback, personalization suggestions")
+}
+
+Rel(user, navPanel, "Navigates searches", "Clicks")
+Rel(user, inboxView, "Views new results", "Clicks")
+Rel(user, resultsView, "Browses results", "Clicks")
+Rel(user, jobDetailView, "Views/edits job details, re-scores", "Types, clicks")
+Rel(user, searchModal, "Creates/edits searches", "Form input")
+Rel(user, scorePanel, "Reviews scores and feedback", "Reads")
+
+Rel(navPanel, tanstackQuery, "Reads searches list", "useQuery")
+Rel(inboxView, tanstackQuery, "Reads aggregated results", "useQuery")
+Rel(resultsView, tanstackQuery, "Reads search results", "useQuery")
+Rel(jobDetailView, tanstackQuery, "Reads/updates job data", "useQuery/useMutation")
+Rel(scorePanel, tanstackQuery, "Reads scores", "useQuery")
+Rel(searchModal, tanstackQuery, "Calls create/update mutations", "useMutation")
+Rel(jobSearchStore, tanstackQuery, "Orchestrates mutations, manages UI state", "Zustand actions")
+
+Rel(tanstackQuery, ipcHandlers, "Invokes IPC channels", "Electron IPC")
+
+Rel(ipcHandlers, jobspyClient, "Triggers API calls", "Function call")
+Rel(ipcHandlers, jobScorer, "Triggers scoring", "Function call")
+Rel(ipcHandlers, companyResearcher, "Triggers research", "Function call")
+Rel(ipcHandlers, generationGraph, "Triggers generate/re-score", "Function call")
+Rel(ipcHandlers, profileGraph, "Triggers coaching session", "Function call")
+Rel(ipcHandlers, dbService, "Reads/writes all data", "Function call")
+Rel(ipcHandlers, pdfExporter, "Triggers export", "Function call")
+Rel(ipcHandlers, scheduler, "Manages schedule", "Registration")
+
+Rel(jobScorer, llmProvider, "Gets LLM model", "Factory")
+Rel(companyResearcher, llmProvider, "Gets LLM model", "Factory")
+Rel(companyResearcher, dbService, "Writes research", "DB write")
+Rel(generationGraph, llmProvider, "Gets LLM model", "Factory")
+Rel(generationGraph, dbService, "Reads/writes documents", "DB read/write")
+Rel(profileGraph, llmProvider, "Gets LLM model", "Factory")
+Rel(profileGraph, sqlCheckpointer, "Persists state", "Checkpointer.put")
+Rel(generationGraph, sqlCheckpointer, "Persists state", "Checkpointer.put")
+Rel(scheduler, jobspyClient, "Runs searches", "Function call")
+Rel(scheduler, dbService, "Checks due searches", "DB read")
+
+@enduml

@@ -1,0 +1,38 @@
+@startuml
+title Re-Score Sequence — Manual Edit Evaluation (Writer Skipped)
+
+actor User
+participant "Job Detail View" as UI
+participant "TanStack Query" as TQ
+participant "IPC Main" as IPC
+participant "Scorer Agent (ATS)" as Scorer
+participant "Reviewer Agent (Humanizer)" as Reviewer
+participant "Mistral LLM" as LLM
+
+User -> UI : Edit resume manually → click "Re-Score"
+UI -> TQ : useMutation: reScore(searchId, jobId, currentContent)
+TQ -> IPC : invoke("document:rescore:stream:<id>")
+
+note right of IPC : Writer is SKIPPED — evaluation only
+
+IPC -> Scorer : evaluate(userEditedContent, jobDescription)
+Scorer -> LLM : score ATS match
+LLM --> Scorer : { atsScore, passed, feedback }
+Scorer --> IPC : { type: "score", atsScore }
+Scorer --> IPC : { type: "feedback", feedback: [...] }
+IPC --> TQ : stream → score panel updates
+
+IPC -> Reviewer : evaluate(userEditedContent)
+Reviewer -> LLM : detect AI tells, rate naturalness
+LLM --> Reviewer : { humanScore, passed, feedback, suggestions }
+Reviewer --> IPC : { type: "score", humanScore }
+Reviewer --> IPC : { type: "feedback", feedback: [...] }
+Reviewer --> IPC : { type: "personalization", suggestions: [...] }
+IPC --> TQ : stream → score panel updates
+
+IPC -> "SQLite" : UPDATE adapted_resumes SET ats_score, human_score, updated_at
+IPC --> TQ : { type: "done" }
+TQ --> UI : Score panel updates — editor content unchanged
+UI --> User : ATS: 88% · Human: 82% — see suggestions below
+
+@enduml
