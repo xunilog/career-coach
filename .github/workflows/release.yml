@@ -33,6 +33,10 @@ jobs:
 
     runs-on: ${{ matrix.os }}
 
+    defaults:
+      run:
+        shell: bash
+
     steps:
       - uses: actions/checkout@v7
 
@@ -67,14 +71,7 @@ jobs:
         run: npm ci
 
       - name: Sync version from package.json to Tauri
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          echo "Syncing version: $VERSION"
-          # Update tauri.conf.json
-          tmp=$(mktemp)
-          jq --arg v "$VERSION" '.version = $v' src-tauri/tauri.conf.json > "$tmp" && mv "$tmp" src-tauri/tauri.conf.json
-          # Update Cargo.toml (first occurrence of version = "...")
-          sed -i "0,/^version = \".*\"/s//version = \"$VERSION\"/" src-tauri/Cargo.toml
+        run: node -e "const fs=require('fs'),v=JSON.parse(fs.readFileSync('package.json','utf8')).version;console.log('Syncing version:',v);const tc=JSON.parse(fs.readFileSync('src-tauri/tauri.conf.json','utf8'));tc.version=v;fs.writeFileSync('src-tauri/tauri.conf.json',JSON.stringify(tc,null,2)+'\n');const c=fs.readFileSync('src-tauri/Cargo.toml','utf8');fs.writeFileSync('src-tauri/Cargo.toml',c.replace(/^version = \"[^\"]*\"/m,'version = \"'+v+'\"'))"
 
       - name: Build frontend
         run: npm run build
