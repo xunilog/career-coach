@@ -6,8 +6,6 @@ Career Coach uses Anthropic's Claude models to power all AI features — job sco
 
 When you launch the app for the first time, you'll see a full-screen page asking for your Anthropic API key. This is the only required configuration.
 
-![API Key Gate](/screenshots/api-key-gate.png)
-
 ### Getting an API Key
 
 1. Go to the [Anthropic Console](https://console.anthropic.com).
@@ -35,8 +33,6 @@ To change your API key later:
 2. Select **API Keys** from the dropdown menu.
 3. Enter your new key and click **Verify & Save**.
 4. The new key replaces the old one, and all subsequent LLM calls use the updated key.
-
-![API Key Modal](/screenshots/api-key-modal.png)
 
 ## How Your Key Is Stored
 
