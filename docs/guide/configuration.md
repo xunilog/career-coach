@@ -23,6 +23,7 @@ When you launch the app for the first time, you'll see a full-screen page asking
 4. Once verified, your key is stored securely in the local database and the app opens.
 
 If verification fails:
+
 - **Invalid key**: Double-check you copied the full key from the Anthropic Console.
 - **No internet**: Check your connection and click **Retry**.
 
@@ -45,12 +46,12 @@ To change your API key later:
 
 ## Supported Providers
 
-| Provider | Model (Standard) | Environment Variable |
-|----------|-----------------|---------------------|
-| Anthropic | Claude Sonnet 4.6 | `VITE_ANTHROPIC_API_KEY` |
-| Mistral | Mistral Medium | `VITE_MISTRAL_API_KEY` |
-| Google Gemini | Gemini 3.5 Flash | `VITE_GEMINI_API_KEY` |
-| DeepSeek | DeepSeek V4 Pro | `VITE_DEEPSEEK_API_KEY` |
+| Provider      | Model (Standard)  | Environment Variable     |
+| ------------- | ----------------- | ------------------------ |
+| Anthropic     | Claude Sonnet 4.6 | `VITE_ANTHROPIC_API_KEY` |
+| Mistral       | Mistral Medium    | `VITE_MISTRAL_API_KEY`   |
+| Google Gemini | Gemini 3.5 Flash  | `VITE_GEMINI_API_KEY`    |
+| DeepSeek      | DeepSeek V4 Pro   | `VITE_DEEPSEEK_API_KEY`  |
 
 The app defaults to **Anthropic** in production. The other providers are available in development mode via environment variables. You can switch providers by setting `VITE_LLM_PROVIDER` to `anthropic`, `mistral`, `gemini`, or `deepseek`.
 

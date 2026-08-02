@@ -41,16 +41,10 @@ export function ApiKeyModal({ opened, onClose }: ApiKeyModalProps) {
   };
 
   return (
-    <Modal
-      opened={opened}
-      onClose={onClose}
-      title="Anthropic API Key"
-      size="md"
-    >
+    <Modal opened={opened} onClose={onClose} title="Anthropic API Key" size="md">
       <Stack gap="sm">
         <Text size="sm" c="dimmed">
-          Enter a new API key to update your credentials. Your key is verified
-          before saving.
+          Enter a new API key to update your credentials. Your key is verified before saving.
         </Text>
 
         <TextInput

@@ -121,9 +121,7 @@ describe("getModel", () => {
   describe("reasoning parameter", () => {
     it("accepts reasoning parameter without throwing", async () => {
       // Should not throw — the parameter is accepted and passed through
-      await expect(
-        getModel(0.3, "deepseek", "standard", true),
-      ).resolves.toBeDefined();
+      await expect(getModel(0.3, "deepseek", "standard", true)).resolves.toBeDefined();
     });
 
     it("defaults reasoning to false when omitted", async () => {

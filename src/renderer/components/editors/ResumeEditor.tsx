@@ -10,15 +10,7 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useViewportSize, useElementSize } from "@mantine/hooks";
-import {
-  Group,
-  Grid,
-  ScrollArea,
-  Box,
-  Text,
-  Divider,
-  ThemeIcon,
-} from "@mantine/core";
+import { Group, Grid, ScrollArea, Box, Text, Divider, ThemeIcon } from "@mantine/core";
 import { MdArticle } from "react-icons/md";
 import { useCareerStore } from "../../stores/careerStore";
 import { ResumeDisplay } from "./ResumeDisplay";

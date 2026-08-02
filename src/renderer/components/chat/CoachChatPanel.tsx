@@ -5,16 +5,7 @@
 // ---------------------------------------------------------------------------
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import {
-  Paper,
-  Stack,
-  Group,
-  Text,
-  ActionIcon,
-  Loader,
-  Box,
-  Tooltip,
-} from "@mantine/core";
+import { Paper, Stack, Group, Text, ActionIcon, Loader, Box, Tooltip } from "@mantine/core";
 import { MdAdd, MdHistory, MdSend, MdPsychology } from "react-icons/md";
 import { useCareerStore } from "../../stores/careerStore";
 import type { AgentName } from "../../../shared/state";

@@ -269,7 +269,10 @@ export async function profileAgent(
       toolCalls ? toolCalls.length : 0,
       toolCalls ? toolCalls.map((tc) => tc.name) : "none",
     );
-    console.log("[profileAgent] LLM text content:", (typeof aiMsg.content === "string" ? aiMsg.content : "").slice(0, 200));
+    console.log(
+      "[profileAgent] LLM text content:",
+      (typeof aiMsg.content === "string" ? aiMsg.content : "").slice(0, 200),
+    );
 
     if (!toolCalls || toolCalls.length === 0) {
       // No tool calls — this is the final text response

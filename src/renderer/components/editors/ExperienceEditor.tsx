@@ -8,15 +8,7 @@
 
 import { useState, useCallback } from "react";
 import { useViewportSize, useElementSize } from "@mantine/hooks";
-import {
-  Divider,
-  Group,
-  Grid,
-  ScrollArea,
-  Box,
-  Text,
-  ThemeIcon,
-} from "@mantine/core";
+import { Divider, Group, Grid, ScrollArea, Box, Text, ThemeIcon } from "@mantine/core";
 import { useCareerStore } from "../../stores/careerStore";
 import { ExperienceDisplay } from "./ExperienceDisplay";
 import { ExperienceEditModal } from "./ExperienceEditModal";

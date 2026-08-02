@@ -171,20 +171,20 @@ Every agent starts here before reading code.
 
 ### 09-settings — API Key Management
 
-| REQ-ID        | Scenario                                        | File                                                  |
-| ------------- | ----------------------------------------------- | ----------------------------------------------------- |
-| `REQ-CNFG-01` | App starts without any stored API key           | `features/09-settings/api-key-management.feature`     |
-| `REQ-CNFG-02` | App starts with a verified key in the database  | `features/09-settings/api-key-management.feature`     |
-| `REQ-CNFG-03` | App starts with an env variable in dev mode     | `features/09-settings/api-key-management.feature`     |
-| `REQ-CNFG-04` | User submits a valid API key                    | `features/09-settings/api-key-management.feature`     |
-| `REQ-CNFG-05` | User submits an invalid API key                 | `features/09-settings/api-key-management.feature`     |
-| `REQ-CNFG-06` | Network error during verification               | `features/09-settings/api-key-management.feature`     |
-| `REQ-CNFG-07` | Update API key from the profile menu            | `features/09-settings/api-key-management.feature`     |
-| `REQ-CNFG-08` | Successful key update via modal                 | `features/09-settings/api-key-management.feature`     |
-| `REQ-CNFG-09` | Invalid key update via modal                    | `features/09-settings/api-key-management.feature`     |
-| `REQ-CNFG-10` | getModel falls back to database when env absent | `features/09-settings/api-key-management.feature`     |
-| `REQ-CNFG-11` | getModel prefers env var over database          | `features/09-settings/api-key-management.feature`     |
-| `REQ-CNFG-12` | getModel throws when no key is available        | `features/09-settings/api-key-management.feature`     |
+| REQ-ID        | Scenario                                        | File                                              |
+| ------------- | ----------------------------------------------- | ------------------------------------------------- |
+| `REQ-CNFG-01` | App starts without any stored API key           | `features/09-settings/api-key-management.feature` |
+| `REQ-CNFG-02` | App starts with a verified key in the database  | `features/09-settings/api-key-management.feature` |
+| `REQ-CNFG-03` | App starts with an env variable in dev mode     | `features/09-settings/api-key-management.feature` |
+| `REQ-CNFG-04` | User submits a valid API key                    | `features/09-settings/api-key-management.feature` |
+| `REQ-CNFG-05` | User submits an invalid API key                 | `features/09-settings/api-key-management.feature` |
+| `REQ-CNFG-06` | Network error during verification               | `features/09-settings/api-key-management.feature` |
+| `REQ-CNFG-07` | Update API key from the profile menu            | `features/09-settings/api-key-management.feature` |
+| `REQ-CNFG-08` | Successful key update via modal                 | `features/09-settings/api-key-management.feature` |
+| `REQ-CNFG-09` | Invalid key update via modal                    | `features/09-settings/api-key-management.feature` |
+| `REQ-CNFG-10` | getModel falls back to database when env absent | `features/09-settings/api-key-management.feature` |
+| `REQ-CNFG-11` | getModel prefers env var over database          | `features/09-settings/api-key-management.feature` |
+| `REQ-CNFG-12` | getModel throws when no key is available        | `features/09-settings/api-key-management.feature` |
 
 ## Diagram Index
 

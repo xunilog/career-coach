@@ -80,7 +80,11 @@ export function ResearchTab({ jobId, company, jobTitle }: ResearchTabProps) {
                   {label}
                 </Text>
                 <Text size="sm" style={{ whiteSpace: "pre-wrap" }}>
-                  {typeof content === "string" ? content : typeof content === "number" ? String(content) : ""}
+                  {typeof content === "string"
+                    ? content
+                    : typeof content === "number"
+                      ? String(content)
+                      : ""}
                 </Text>
               </Paper>
             );

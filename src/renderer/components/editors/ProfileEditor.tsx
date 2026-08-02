@@ -7,15 +7,7 @@
 
 import { useState, useCallback } from "react";
 import { useViewportSize, useElementSize } from "@mantine/hooks";
-import {
-  Group,
-  Grid,
-  ScrollArea,
-  Box,
-  Text,
-  Divider,
-  ThemeIcon,
-} from "@mantine/core";
+import { Group, Grid, ScrollArea, Box, Text, Divider, ThemeIcon } from "@mantine/core";
 import { useCareerStore } from "../../stores/careerStore";
 import { ProfileDisplay } from "./ProfileDisplay";
 import type { EditSection } from "./ProfileDisplay";

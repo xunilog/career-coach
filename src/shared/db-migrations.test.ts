@@ -5,13 +5,7 @@
 // ---------------------------------------------------------------------------
 
 import { describe, it, expect } from "vitest";
-import {
-  SCHEMA_VERSION,
-  MIGRATIONS,
-  providerKeys,
-  searches,
-  jobs,
-} from "./db-migrations";
+import { SCHEMA_VERSION, MIGRATIONS, providerKeys, searches, jobs } from "./db-migrations";
 
 describe("providerKeys table", () => {
   it("has a Zod schema that validates a full row", () => {

@@ -146,9 +146,7 @@ describe("resolveKey", () => {
   });
 
   it("throws when DB has a row but api_key is null", async () => {
-    const mockDb = makeMockDb([
-      { provider: "anthropic", api_key: null, verified_at: null },
-    ]);
+    const mockDb = makeMockDb([{ provider: "anthropic", api_key: null, verified_at: null }]);
     (getDb as ReturnType<typeof vi.fn>).mockResolvedValue(mockDb);
 
     await expect(resolveKey("anthropic")).rejects.toThrow(
