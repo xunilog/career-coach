@@ -40,7 +40,7 @@ export function useCreateConversation(type?: string) {
   return useMutation<Conversation, Error, void>({
     mutationFn: () => createConversationAuto(type),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY });
+      void queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY });
     },
   });
 }
@@ -53,7 +53,7 @@ export function useDeleteConversation() {
       return { success: await deleteConversationAuto(threadId) };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY });
+      void queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY });
     },
   });
 }

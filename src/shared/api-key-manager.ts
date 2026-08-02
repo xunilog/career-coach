@@ -115,7 +115,7 @@ export async function verifyAndStoreKey(provider: string, key: string): Promise<
   let response: Response;
   try {
     response = await fetch(endpoint, { headers: headersFn(key) });
-  } catch (err) {
+  } catch {
     throw new Error("Unable to reach Anthropic. Check your internet connection and try again.");
   }
 

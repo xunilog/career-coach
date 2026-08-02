@@ -513,13 +513,13 @@ export const useCareerStore = create<CareerStore>((set, get) => ({
     set(updates);
 
     if (hasProfileData) {
-      get().saveToDisk("profile");
+      void get().saveToDisk("profile");
     }
     if (result.experiences && result.experiences.length > 0) {
-      get().saveToDisk("experience");
+      void get().saveToDisk("experience");
     }
     if (result.resumeDraft) {
-      get().saveToDisk("resume");
+      void get().saveToDisk("resume");
     }
   },
 
@@ -666,7 +666,7 @@ export const useCareerStore = create<CareerStore>((set, get) => ({
   addExperience: (experience) => {
     const state = get();
     set({ experiences: [...state.experiences, experience] });
-    get().saveToDisk("experience");
+    void get().saveToDisk("experience");
   },
 
   updateExperience: (id, partial) => {
@@ -674,7 +674,7 @@ export const useCareerStore = create<CareerStore>((set, get) => ({
     set({
       experiences: state.experiences.map((exp) => (exp.id === id ? { ...exp, ...partial } : exp)),
     });
-    get().saveToDisk("experience");
+    void get().saveToDisk("experience");
   },
 
   removeExperience: (id) => {
@@ -682,6 +682,6 @@ export const useCareerStore = create<CareerStore>((set, get) => ({
     set({
       experiences: state.experiences.filter((exp) => exp.id !== id),
     });
-    get().saveToDisk("experience");
+    void get().saveToDisk("experience");
   },
 }));

@@ -59,7 +59,7 @@ export function useCreateSearch() {
       return createSearch(db, input);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: SEARCH_LIST_KEY });
+      void queryClient.invalidateQueries({ queryKey: SEARCH_LIST_KEY });
     },
   });
 }
@@ -73,8 +73,8 @@ export function useUpdateSearch() {
       return (await updateSearch(db, id, input))!;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: SEARCH_LIST_KEY });
-      queryClient.invalidateQueries({ queryKey: searchKey(data.id) });
+      void queryClient.invalidateQueries({ queryKey: SEARCH_LIST_KEY });
+      void queryClient.invalidateQueries({ queryKey: searchKey(data.id) });
     },
   });
 }
@@ -88,8 +88,8 @@ export function useDeleteSearch() {
       return { deleted: await deleteSearch(db, id) };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: SEARCH_LIST_KEY });
-      queryClient.invalidateQueries({ queryKey: ["jobs", "inbox"] });
+      void queryClient.invalidateQueries({ queryKey: SEARCH_LIST_KEY });
+      void queryClient.invalidateQueries({ queryKey: ["jobs", "inbox"] });
     },
   });
 }

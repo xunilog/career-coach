@@ -8,16 +8,7 @@
 
 import { useState, useCallback } from "react";
 import { useViewportSize, useElementSize } from "@mantine/hooks";
-import {
-  Divider,
-  Group,
-  Grid,
-  ScrollArea,
-  useMantineTheme,
-  Box,
-  Text,
-  ThemeIcon,
-} from "@mantine/core";
+import { Divider, Group, Grid, ScrollArea, Box, Text, ThemeIcon } from "@mantine/core";
 import { useCareerStore } from "../../stores/careerStore";
 import { ExperienceDisplay } from "./ExperienceDisplay";
 import { ExperienceEditModal } from "./ExperienceEditModal";
@@ -31,7 +22,6 @@ export function ExperienceEditor() {
   const addExperience = useCareerStore((s) => s.addExperience);
   const updateExperience = useCareerStore((s) => s.updateExperience);
   const removeExperience = useCareerStore((s) => s.removeExperience);
-  const theme = useMantineTheme();
 
   // ── Modal state ────────────────────────────────────────────────────
   const [editingExperience, setEditingExperience] = useState<Experience | null>(null);
@@ -101,7 +91,6 @@ export function ExperienceEditor() {
                 placeholder="Tell the Experience Coach about a past role..."
                 forceAgent="experience"
                 colH={colH}
-                themeSpacing={theme.spacing.md}
               />
             </Box>
           </Box>

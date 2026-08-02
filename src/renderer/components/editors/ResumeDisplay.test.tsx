@@ -148,7 +148,7 @@ describe("ResumeDisplay", () => {
     renderComponent(vi.fn(), onEditExperience);
 
     const experienceCard = screen.getByText("Experience");
-    await fireEvent.click(experienceCard);
+    fireEvent.click(experienceCard);
 
     expect(onEditExperience).toHaveBeenCalled();
   });

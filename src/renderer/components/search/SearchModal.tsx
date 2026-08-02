@@ -276,7 +276,7 @@ export function SearchModal() {
       await deleteMutation.mutateAsync(editingId);
       useJobSearchStore.getState().setActiveSearchId(null);
       handleClose();
-    } catch (_err) {
+    } catch {
       // error state handled by the mutation
     }
   }, [editingId, deleteMutation, handleClose]);

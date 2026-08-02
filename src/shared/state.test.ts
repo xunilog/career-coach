@@ -560,7 +560,7 @@ import {
   markdownToSkill,
   groupSkillsByCategory,
 } from "./state";
-import type { Skill, SkillCategory } from "./state";
+import type { Skill } from "./state";
 
 describe("SkillCategorySchema", () => {
   it("accepts all predefined categories", () => {

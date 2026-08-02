@@ -118,7 +118,7 @@ export function startScheduler(executeFn: (search: SearchDefinition) => Promise<
   stopScheduler();
 
   // Startup check — emit event if searches are due
-  getDueSearches().then((due) => {
+  void getDueSearches().then((due) => {
     if (due.length > 0) {
       console.log(`[scheduler] Startup: ${due.length} search(es) due`);
       emit("scheduler:due-searches", due).catch(console.error);

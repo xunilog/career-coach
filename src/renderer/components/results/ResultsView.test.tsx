@@ -96,7 +96,7 @@ vi.mock("../shared/SearchLogBox", () => ({
 
 vi.mock("../job-detail/JobDetailOverlay", () => ({
   JobDetailOverlay: ({
-    jobId,
+    jobId: _jobId,
     onClose,
   }: {
     jobId: string;

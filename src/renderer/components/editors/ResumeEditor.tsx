@@ -10,16 +10,7 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useViewportSize, useElementSize } from "@mantine/hooks";
-import {
-  Group,
-  Grid,
-  ScrollArea,
-  useMantineTheme,
-  Box,
-  Text,
-  Divider,
-  ThemeIcon,
-} from "@mantine/core";
+import { Group, Grid, ScrollArea, Box, Text, Divider, ThemeIcon } from "@mantine/core";
 import { MdArticle } from "react-icons/md";
 import { useCareerStore } from "../../stores/careerStore";
 import { ResumeDisplay } from "./ResumeDisplay";
@@ -35,7 +26,6 @@ import { useLayoutStore } from "../../stores/layoutStore";
 export function ResumeEditor() {
   const resumeData = useCareerStore((s) => s.resumeData);
   const setResumeFields = useCareerStore((s) => s.setResumeFields);
-  const theme = useMantineTheme();
   const navigate = useNavigate();
 
   // ── Modal state ────────────────────────────────────────────────────
@@ -50,7 +40,7 @@ export function ResumeEditor() {
   }, []);
 
   const handleEditExperience = useCallback(() => {
-    navigate("/experience");
+    void navigate("/experience");
   }, [navigate]);
 
   // ── Layout ────────────────────────────────────────────────────────
@@ -89,7 +79,6 @@ export function ResumeEditor() {
                 placeholder="Tell your Resume Coach about your skills, education, or background..."
                 forceAgent="resume"
                 colH={colH}
-                themeSpacing={theme.spacing.md}
               />
             </Box>
           </Box>

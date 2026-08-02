@@ -9,33 +9,19 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: "22"
+          node-version: "24"
 
       - name: Install npm dependencies
         run: npm ci
 
       - name: oxlint
-        uses: reviewdog/action-oxlint@v1
-        with:
-          oxlint_flags: "."
-          fail_on_error: true
-          reporter: github-pr-review
-          level: warning
+        run: npx oxlint . --format github
 
       - name: oxfmt check
-        env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          npx oxfmt --check 2>&1 | reviewdog \
-            -efm="%f:%l:%c: %m" \
-            -name="oxfmt" \
-            -reporter=github-pr-review \
-            -level=warning \
-            -fail-on-error=true
+        run: npx oxfmt --check

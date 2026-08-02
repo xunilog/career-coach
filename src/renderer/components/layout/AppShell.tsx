@@ -48,12 +48,12 @@ export function AppShellLayout() {
       setDuePayload(event.payload);
     });
     return () => {
-      unlisten.then((fn) => fn());
+      void unlisten.then((fn) => fn());
     };
   }, []);
 
   const handleRunNow = useCallback(() => {
-    runAll();
+    void runAll();
   }, [runAll]);
 
   const handleDismiss = useCallback(() => {

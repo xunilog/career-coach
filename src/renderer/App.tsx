@@ -35,7 +35,7 @@ function AppRoutes() {
   // Load career data from SQLite on app startup so the Overview page
   // (and all other pages) see saved profile/experience data immediately.
   useEffect(() => {
-    initializeFromStorage();
+    void initializeFromStorage();
   }, [initializeFromStorage]);
 
   return (

@@ -34,7 +34,7 @@ vi.mock("langchain", () => ({
 }));
 
 vi.mock("@langchain/core/tools", () => ({
-  tool: vi.fn((fn: unknown, config: unknown) => fn),
+  tool: vi.fn((fn: unknown, _config: unknown) => fn),
 }));
 
 vi.mock("@langchain/core/messages", () => ({

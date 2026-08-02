@@ -97,13 +97,8 @@ export function ApiKeyGate({ onKeyReady }: ApiKeyGateProps) {
             </Title>
 
             <Text size="sm" c="dimmed" ta="center">
-              Your API key is stored locally and verified before use. You can
-              get one from the{" "}
-              <a
-                href="https://console.anthropic.com"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              Your API key is stored locally and verified before use. You can get one from the{" "}
+              <a href="https://console.anthropic.com" target="_blank" rel="noopener noreferrer">
                 Anthropic Console
               </a>
               .

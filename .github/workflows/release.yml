@@ -34,9 +34,9 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: npm
@@ -46,7 +46,7 @@ jobs:
           target: ${{ matrix.target }}
 
       - name: Cache Cargo registry
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: |
             ~/.cargo/registry
@@ -79,7 +79,7 @@ jobs:
         run: cargo tauri build --target ${{ matrix.target }} --bundles ${{ matrix.ext }}
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: build-${{ matrix.target }}
           path: src-tauri/target/${{ matrix.target }}/release/bundle/
@@ -91,11 +91,12 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: build-*
           path: artifacts
           merge-multiple: true
+          digest-mismatch: warn
 
       - name: Build release body
         id: body
@@ -116,7 +117,7 @@ jobs:
       - name: Display artifact structure
         run: find artifacts -type f -ls
 
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v3
         with:
           name: ${{ inputs.title }}
           body: ${{ steps.body.outputs.body }}

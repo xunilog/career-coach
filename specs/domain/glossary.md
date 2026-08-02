@@ -209,11 +209,13 @@ The infra layer that provisions LLM provider credentials at runtime. Replaces th
 A stored API key for a specific LLM provider. Stored in `provider_keys` table. Defined in `src/shared/db-migrations.ts` (`providerKeys`).
 
 **Columns:**
+
 - `provider` TEXT PK — one of `"anthropic"`, `"mistral"`, `"gemini"`, `"deepseek"`
 - `api_key` TEXT NOT NULL
 - `verified_at` TEXT (nullable ISO timestamp)
 
 **Invariants:**
+
 - A key is only stored after successful verification via a call to the provider's models endpoint (e.g., `GET https://api.anthropic.com/v1/models` for Anthropic).
 - `verified_at` is set on initial store and on every subsequent update after verification.
 - Production default provider is `"anthropic"` — the UI only exposes Anthropic key management.

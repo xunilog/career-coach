@@ -168,7 +168,9 @@ export async function createResumeChatAgent(checkpointer?: BaseCheckpointSaver) 
       }
 
       // Dedup: skip if conversation unchanged since last extraction
-      const hashKey = history.map((m) => String(m.content ?? "")).join("|");
+      const hashKey = history
+        .map((m) => (typeof m.content === "string" ? m.content : ""))
+        .join("|");
       if (hashKey === lastExtractionHash) {
         return JSON.stringify(accumulatedResume.value, null, 2);
       }
