@@ -29,7 +29,7 @@ export async function updateJobStatus(
   const current = rows[0].status;
 
   // Guard: status must match expected fromStatus
-  if (current !== fromStatus && fromStatus !== current) {
+  if (current !== fromStatus) {
     return false;
   }
 

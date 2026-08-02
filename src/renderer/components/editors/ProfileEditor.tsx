@@ -11,7 +11,6 @@ import {
   Group,
   Grid,
   ScrollArea,
-  useMantineTheme,
   Box,
   Text,
   Divider,
@@ -30,7 +29,6 @@ import { useLayoutStore } from "../../stores/layoutStore";
 export function ProfileEditor() {
   const profile = useCareerStore((s) => s.profile);
   const setProfileFields = useCareerStore((s) => s.setProfileFields);
-  const theme = useMantineTheme();
 
   // ── Modal state ────────────────────────────────────────────────────
   const [editingSection, setEditingSection] = useState<EditSection | null>(null);
@@ -79,7 +77,6 @@ export function ProfileEditor() {
                 placeholder="Tell the Profile Coach about yourself..."
                 forceAgent="profile"
                 colH={colH}
-                themeSpacing={theme.spacing.md}
               />
             </Box>
           </Box>

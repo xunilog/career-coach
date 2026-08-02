@@ -28,7 +28,7 @@ export function useUpdateStatus() {
       success: await updateJobStatusAuto(jobId, fromStatus, toStatus, notes),
     }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: JOBS_KEY });
+      void queryClient.invalidateQueries({ queryKey: JOBS_KEY });
     },
   });
 }
@@ -60,7 +60,7 @@ export function useUpdateNotes() {
       success: await updateJobNotesAuto(jobId, notes),
     }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: JOBS_KEY });
+      void queryClient.invalidateQueries({ queryKey: JOBS_KEY });
     },
   });
 }

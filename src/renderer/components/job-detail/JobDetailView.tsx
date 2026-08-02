@@ -20,7 +20,6 @@ import {
   Button,
   ActionIcon,
   Paper,
-  useMantineTheme,
 } from "@mantine/core";
 import { useViewportSize, useElementSize } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
@@ -80,7 +79,6 @@ export function JobDetailView({ jobId, searchId, onClose }: JobDetailViewProps) 
   const { ref: tabsRef, height: tabsH } = useElementSize({ box: "border-box" });
   const colH = `calc(${viewportH}px - ${appHeaderHeight}px)`;
   const contentH = `calc(${colH} - ${jobHeaderH}px - ${tabsH}px)`;
-  const theme = useMantineTheme();
   const queryClient = useQueryClient();
   const setJobContext = useCareerStore((s) => s.setJobContext);
   const documentUpdatedAt = useCareerStore((s) => s.documentUpdatedAt);
@@ -132,7 +130,7 @@ export function JobDetailView({ jobId, searchId, onClose }: JobDetailViewProps) 
   useEffect(() => {
     if (documentUpdatedAt > 0 && jobId && documentType) {
       const key = documentType === "resume" ? resumeKey(jobId) : coverKey(jobId);
-      queryClient.invalidateQueries({ queryKey: key });
+      void queryClient.invalidateQueries({ queryKey: key });
     }
   }, [documentUpdatedAt, jobId, documentType, queryClient]);
 
@@ -382,7 +380,6 @@ export function JobDetailView({ jobId, searchId, onClose }: JobDetailViewProps) 
                     coachType={`job:${job.id}`}
                     forceAgent="job"
                     colH={contentH}
-                    themeSpacing={theme.spacing.md}
                     emptyStateText="Discuss this job and your application materials with the AI coach."
                     placeholder="Ask about this job, company, or your application..."
                   />

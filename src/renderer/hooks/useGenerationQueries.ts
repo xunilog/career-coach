@@ -141,7 +141,7 @@ export function useGenerateMutation(documentType: DocumentType) {
 
         // Invalidate query cache so useResumeQuery / useCoverLetterQuery refetch
         const cacheKey = documentType === "resume" ? resumeKey(jobId) : coverKey(jobId);
-        queryClient.invalidateQueries({ queryKey: cacheKey });
+        void queryClient.invalidateQueries({ queryKey: cacheKey });
 
         setStreamState((prev) => ({
           ...prev,
@@ -178,7 +178,7 @@ export function useSaveResume(jobId: string | null) {
       );
     },
     onSuccess: () => {
-      if (jobId) queryClient.invalidateQueries({ queryKey: resumeKey(jobId) });
+      if (jobId) void queryClient.invalidateQueries({ queryKey: resumeKey(jobId) });
     },
   });
 }
@@ -200,7 +200,7 @@ export function useSaveCover(jobId: string | null) {
       );
     },
     onSuccess: () => {
-      if (jobId) queryClient.invalidateQueries({ queryKey: coverKey(jobId) });
+      if (jobId) void queryClient.invalidateQueries({ queryKey: coverKey(jobId) });
     },
   });
 }

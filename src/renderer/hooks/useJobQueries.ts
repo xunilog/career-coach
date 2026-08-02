@@ -61,7 +61,7 @@ export function useMarkSeen() {
       return { ok: true };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: JOBS_KEY });
+      void queryClient.invalidateQueries({ queryKey: JOBS_KEY });
     },
   });
 }
@@ -76,7 +76,7 @@ export function useMarkAllSeen() {
       return { ok: true };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: JOBS_KEY });
+      void queryClient.invalidateQueries({ queryKey: JOBS_KEY });
     },
   });
 }
@@ -114,7 +114,7 @@ export function useScoreSearch() {
       return { ok: true };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: JOBS_KEY });
+      void queryClient.invalidateQueries({ queryKey: JOBS_KEY });
     },
   });
 }

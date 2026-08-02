@@ -36,7 +36,7 @@ export function useSearchExecution() {
   const subscribeToStream = useCallback(
     (streamId: string, runKey: string) => {
       const channel = `job-search:run-all:stream:${streamId}`;
-      listen<StreamEvent>(channel, (event) => {
+      void listen<StreamEvent>(channel, (event) => {
         const e = event.payload;
         switch (e.type) {
           case "start":
@@ -83,7 +83,7 @@ export function useSearchExecution() {
 
     try {
       await runAllSearches();
-      queryClient.invalidateQueries({ queryKey: ["jobs"] });
+      void queryClient.invalidateQueries({ queryKey: ["jobs"] });
     } catch (err) {
       console.error("[search-execution] runAll failed:", err);
       clearSearchRun(SEARCH_ALL_KEY);
@@ -103,7 +103,7 @@ export function useSearchExecution() {
 
       try {
         await runSingleSearch(searchId, channel);
-        queryClient.invalidateQueries({ queryKey: ["jobs"] });
+        void queryClient.invalidateQueries({ queryKey: ["jobs"] });
       } catch (err) {
         console.error("[search-execution] runSingle failed:", err);
         clearSearchRun(searchId);

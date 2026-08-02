@@ -118,7 +118,9 @@ export function InboxView() {
         const bVal = (b as unknown as Record<string, unknown>)[sortField];
         if (aVal == null) return 1;
         if (bVal == null) return -1;
-        const cmp = String(aVal).localeCompare(String(bVal));
+        const aStr = typeof aVal === "string" || typeof aVal === "number" || typeof aVal === "boolean" ? String(aVal) : "";
+        const bStr = typeof bVal === "string" || typeof bVal === "number" || typeof bVal === "boolean" ? String(bVal) : "";
+        const cmp = aStr.localeCompare(bStr);
         return sortDir === "asc" ? cmp : -cmp;
       })
     : [];

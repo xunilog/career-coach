@@ -14,8 +14,6 @@ import {
   Loader,
   Box,
   Tooltip,
-  Collapse,
-  UnstyledButton,
 } from "@mantine/core";
 import { MdAdd, MdHistory, MdSend, MdPsychology } from "react-icons/md";
 import { useCareerStore } from "../../stores/careerStore";
@@ -45,8 +43,6 @@ export interface CoachChatPanelProps {
   forceAgent?: "profile" | "experience" | "resume" | "job";
   /** Height of the parent column (CSS value). */
   colH: string;
-  /** Theme spacing for layout calculation. */
-  themeSpacing: string;
 }
 
 export function CoachChatPanel({
@@ -56,7 +52,6 @@ export function CoachChatPanel({
   placeholder,
   forceAgent,
   colH,
-  themeSpacing,
 }: CoachChatPanelProps) {
   const threadId = useCareerStore((s) => s.threadId);
   const setConversations = useCareerStore((s) => s.setConversations);
@@ -83,16 +78,16 @@ export function CoachChatPanel({
       // No conversations of this type yet — create one in the DB so that
       // messages are persisted under a real thread_id, not a transient
       // session ID that would be lost on navigation.
-      createConversation.mutateAsync().then((newConv) => {
+      void createConversation.mutateAsync().then((newConv) => {
         startNewConversation(newConv);
-        initializeFromStorage();
+        void initializeFromStorage();
       });
       return;
     }
 
     // Only load if we're not already on this conversation
     if (latestConversation.threadId !== threadId) {
-      loadConversation(latestConversation);
+      void loadConversation(latestConversation);
     }
   }, [
     latestConversation,
@@ -273,8 +268,6 @@ function CoachChatInputRow({
 }) {
   const isStreaming = useCareerStore((s) => s.isStreaming);
   const sendMessage = useCareerStore((s) => s.sendMessage);
-  const messages = useCareerStore((s) => s.messages);
-
   const [chatInput, setChatInput] = useState("");
   const chatInputRef = useRef(chatInput);
   useEffect(() => {

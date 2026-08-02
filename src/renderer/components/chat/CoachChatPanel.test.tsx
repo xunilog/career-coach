@@ -207,7 +207,6 @@ function renderCoachChatPanel(coachType: "profile" | "experience" | "resume" = "
           placeholder="Tell your coach about yourself..."
           forceAgent="profile"
           colH="calc(800px - 60px - 2 * 16px)"
-          themeSpacing="16px"
         />
       </MantineProvider>
     </QueryClientProvider>,

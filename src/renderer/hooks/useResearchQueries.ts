@@ -90,7 +90,7 @@ export function useResearchMutation() {
           [jobId, result.overview, result.culture, result.news, result.keyPeople, result.market],
         );
 
-        queryClient.invalidateQueries({ queryKey: researchKey(jobId) });
+        void queryClient.invalidateQueries({ queryKey: researchKey(jobId) });
       } catch (err) {
         console.error("[research] start failed:", err);
         setStreamState((prev) => ({ ...prev, isResearching: false }));

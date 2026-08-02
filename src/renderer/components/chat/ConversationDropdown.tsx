@@ -6,7 +6,7 @@
 // ---------------------------------------------------------------------------
 
 import { useMemo } from "react";
-import { Menu, Button, Text, Group, ActionIcon, Divider, Stack } from "@mantine/core";
+import { Menu, Button, Text, Group, ActionIcon, Stack } from "@mantine/core";
 import { MdArrowDropDown, MdAdd, MdDelete } from "react-icons/md";
 import type { Conversation } from "../../../services/conversation-service";
 

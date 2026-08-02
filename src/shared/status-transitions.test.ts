@@ -5,7 +5,6 @@
 
 import { describe, it, expect } from "vitest";
 import {
-  STATUS_TRANSITIONS,
   isTransitionValid,
   getAllowedTransitions,
   isTerminal,

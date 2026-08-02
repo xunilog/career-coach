@@ -68,7 +68,7 @@ export function CoverLetterTab({ jobId }: CoverLetterTabProps) {
   }, [editor, chunks]);
 
   const handleGenerate = useCallback(() => {
-    startGeneration(jobId, false);
+    void startGeneration(jobId, false);
   }, [jobId, startGeneration]);
 
   const handleSave = useCallback(async () => {
@@ -84,7 +84,7 @@ export function CoverLetterTab({ jobId }: CoverLetterTabProps) {
     const handler = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === "s") {
         e.preventDefault();
-        handleSave();
+        void handleSave();
       }
     };
     window.addEventListener("keydown", handler);

@@ -162,7 +162,7 @@ describe("createConversation type segregation", () => {
 
     expect(conversation.type).toBe("general");
 
-    const [insertSql, insertParams] = db.execute.mock.calls[0];
+    const [, insertParams] = db.execute.mock.calls[0];
     expect(insertParams[2]).toBe("general");
   });
 });

@@ -43,7 +43,6 @@ import { getModel, clearModelCache } from "./llm-provider";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { ChatDeepSeek } from "@langchain/deepseek";
 import { ChatAnthropic } from "@langchain/anthropic";
-import { ChatMistralAI } from "@langchain/mistralai";
 import { clearCache as clearKeyCache } from "./api-key-manager";
 
 // API keys exposed from env vars (dev mode) — use VITE_ prefix for consistency

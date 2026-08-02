@@ -41,7 +41,7 @@ export interface ExperienceCardProps {
 
 // ── Format helpers ─────────────────────────────────────────────────────────
 
-function formatDate(date: string | "present"): string {
+function formatDate(date: string): string {
   if (!date) return "—";
   if (date === "present") return "Present";
   return date;

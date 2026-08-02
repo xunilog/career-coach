@@ -13,7 +13,6 @@ import {
   Group,
   Grid,
   ScrollArea,
-  useMantineTheme,
   Box,
   Text,
   ThemeIcon,
@@ -31,7 +30,6 @@ export function ExperienceEditor() {
   const addExperience = useCareerStore((s) => s.addExperience);
   const updateExperience = useCareerStore((s) => s.updateExperience);
   const removeExperience = useCareerStore((s) => s.removeExperience);
-  const theme = useMantineTheme();
 
   // ── Modal state ────────────────────────────────────────────────────
   const [editingExperience, setEditingExperience] = useState<Experience | null>(null);
@@ -101,7 +99,6 @@ export function ExperienceEditor() {
                 placeholder="Tell the Experience Coach about a past role..."
                 forceAgent="experience"
                 colH={colH}
-                themeSpacing={theme.spacing.md}
               />
             </Box>
           </Box>
