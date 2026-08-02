@@ -5,7 +5,7 @@ export default defineConfig({
   description:
     "Multi-agent AI career coaching system — find jobs, score matches, research companies, and generate tailored resumes",
   lang: "en-US",
-  base: "/find-my-job/",
+  base: "/career-coach/",
   themeConfig: {
     nav: [
       { text: "Guide", link: "/guide/getting-started" },
