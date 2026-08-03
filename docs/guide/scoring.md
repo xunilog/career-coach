@@ -29,11 +29,7 @@ Scores appear in the results table as color-coded badges. You can **sort by scor
 
 ## Prerequisites
 
-Scoring requires a **career profile**. If you haven't built one yet:
-
-1. Open the **Career Coach Chat**
-2. The Profile Coach agent will guide you through defining your drivers, values, and work style
-3. Once your profile is complete, new jobs will be scored automatically
+Scoring requires a **career profile**. If you haven't built one yet, the [Profile Coach](/guide/profile) will guide you through defining your drivers, values, and work style. Once your profile is complete, new jobs will be scored automatically.
 
 Without a profile, jobs remain unscored and you'll see a prompt to build one.
 

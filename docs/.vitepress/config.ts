@@ -5,11 +5,11 @@ export default defineConfig({
   description:
     "Multi-agent AI career coaching system — find jobs, score matches, research companies, and generate tailored resumes",
   lang: "en-US",
-  base: "/career-coach/",
+  base: "https://xunilog.github.io/career-coach/",
   themeConfig: {
     nav: [
       { text: "Guide", link: "/guide/getting-started" },
-      { text: "GitHub", link: "https://github.com/yanncbl/find-my-job" },
+      { text: "GitHub", link: "https://github.com/xunilog/career-coach" },
     ],
     sidebar: [
       {
@@ -21,18 +21,25 @@ export default defineConfig({
         ],
       },
       {
-        text: "Features",
+        text: "About You",
+        items: [
+          { text: "Career Profile", link: "/guide/profile" },
+          { text: "Work Experience", link: "/guide/experiences" },
+          { text: "Reference Resume", link: "/guide/reference-resume" },
+        ],
+      },
+      {
+        text: "Job Searches",
         items: [
           { text: "Job Search", link: "/guide/search" },
           { text: "AI Scoring", link: "/guide/scoring" },
           { text: "Company Research", link: "/guide/research" },
           { text: "Resume & Cover Letter", link: "/guide/generation" },
           { text: "Application Tracking", link: "/guide/tracking" },
-          { text: "Career Coach Chat", link: "/guide/chat" },
           { text: "Export & Apply", link: "/guide/export" },
         ],
       },
     ],
-    socialLinks: [{ icon: "github", link: "https://github.com/yanncbl/find-my-job" }],
+    socialLinks: [{ icon: "github", link: "https://github.com/xunilog/career-coach" }],
   },
 });

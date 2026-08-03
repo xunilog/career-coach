@@ -6,28 +6,49 @@ Career Coach is a desktop application that helps you find jobs, evaluate your fi
 
 ## Installation
 
-Download the latest release for your platform from the [GitHub releases page](https://github.com/yanncbl/find-my-job/releases).
+Download the latest release for your platform from the [GitHub releases page](https://github.com/xunilog/career-coach/releases).
 
-- **macOS**: Download the `.dmg` file
-- **Windows**: Download the `.msi` installer
-- **Linux**: Download the `.AppImage` or `.deb` package
+> **Note:** The packages are **not notarized** — neither Apple notarization (macOS) nor Authenticode signing (Windows) is applied. Your OS will show a security warning on first launch.
+
+### macOS
+
+1. Download the `.dmg` file from the latest release.
+2. Double-click the DMG and drag **Career Coach** to your Applications folder.
+3. Because the app is not notarized, Gatekeeper will block it on first launch.
+   **Do one of the following:**
+   - **Right-click** the app in Finder → **Open** → click **Open** in the dialog.
+   - Or go to **System Settings → Privacy & Security** and click **Open Anyway** next to the "Career Coach" entry.
+4. Subsequent launches will work normally.
+
+### Windows
+
+1. Download the `.msi` file from the latest release.
+2. Double-click the MSI to install.
+3. On first launch, SmartScreen may show a warning because the package is unsigned.
+   Click **More info** → **Run anyway**.
 
 ## Prerequisites
 
 - **Anthropic API key**: You need an API key from Anthropic (Claude). [Learn how to set it up →](/guide/configuration)
 - **Internet connection**: Job searches and AI features require internet access.
 
-## Quick Start
+The app is split into two main sections: **About You** (building your career foundation) and **Job Searches** (finding and applying). Work through them in order — everything in Job Searches depends on what you build in About You.
 
-1. **Set up your API key** — On first launch, you'll be prompted for your Anthropic API key. [Configuration guide →](/guide/configuration)
-2. **Build your career profile** — Start a chat with the Career Coach to define your career drivers, values, and work preferences. The AI will guide you through it.
-3. **Enter your work experience** — Add your past roles, achievements, and skills in the Profile section. This is used as input for resume generation.
-4. **Create your base resume** — Write a "kitchen-sink" resume with all your experience. The AI uses this as raw material for per-job tailoring.
-5. **Create a job search** — Add a search with a title, location, and schedule (daily, weekly, monthly, or manual).
-6. **Browse results** — New jobs appear in your Inbox. Click any job to see details, scores, and generate documents.
+## About You
+
+1. **Build your career profile** — The Profile Coach maps your Colors/DISC type, career drivers, values, and work style through a guided conversation. [Learn more →](/guide/profile)
+2. **Enter your work experience** — Add past roles with achievements and skills. The Experience Coach helps you articulate each role using STAR and RACI frameworks. [Learn more →](/guide/experiences)
+3. **Create your reference resume** — A comprehensive "kitchen-sink" resume covering all your experience. The Resume Coach guides you through it. [Learn more →](/guide/reference-resume)
+
+## Job Searches
+
+4. **Create a job search** — Add a title, location, and schedule (daily, weekly, monthly, or manual). Searches scrape Indeed and LinkedIn. [Learn more →](/guide/search)
+5. **Browse and score** — New jobs are automatically scored against your career profile. Sort by fit level to focus on the best matches. [Learn more →](/guide/scoring)
+6. **Research companies** — One-click AI research for jobs you're interested in: overview, culture, news, key people, and market position. [Learn more →](/guide/research)
+7. **Generate tailored documents** — ATS-optimized resumes and cover letters per job, refined through a Writer → Scorer → Reviewer pipeline. [Learn more →](/guide/generation)
+8. **Track and export** — Move jobs through application statuses. Export tailored documents to PDF. [Learn more →](/guide/tracking) · [Export →](/guide/export)
 
 ## Next Steps
 
 - [Understand the full workflow](/guide/how-it-works)
-- [Set up job searches](/guide/search)
 - [Configure your API key](/guide/configuration)

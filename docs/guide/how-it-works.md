@@ -6,35 +6,36 @@ Career Coach automates the job hunting workflow end-to-end, from discovering lis
 
 The application runs as a **desktop app** (Tauri + Vite + React). Job data is scraped from Indeed and LinkedIn, stored locally in SQLite, and analyzed by multiple AI agents working together.
 
-## The Pipeline
+## The Two-Phase Workflow
+
+Career Coach is split into two sections, designed to be worked through in order:
+
+### Phase 1: About You
+
+Build your career foundation before searching for jobs. Everything in Phase 2 depends on this.
+
+```
+Profile → Experiences → Reference Resume
+```
+
+- **Career Profile** — The Profile Coach maps your Colors/DISC type, career drivers, values, and work style through conversation.
+- **Work Experiences** — The Experience Coach helps you articulate each past role using STAR (achievements) and RACI (scope of responsibility) frameworks.
+- **Reference Resume** — The Resume Coach helps you build a comprehensive "kitchen-sink" resume covering all your experience and skills.
+
+### Phase 2: Job Searches
+
+With your foundation built, find jobs and generate tailored applications.
 
 ```
 Search → Score → Research → Generate → Track → Export
 ```
 
-### 1. Search
-
-You create saved searches with a title, location, and optional advanced filters. Searches can run on a schedule (daily/weekly/monthly) or manually. When a search executes, the app scrapes Indeed and LinkedIn for matching jobs via ts-jobspy.
-
-### 2. Score
-
-New jobs are automatically scored in batches of 10. The AI evaluates each job against your career profile (drivers, values, work style) and assigns a fit level: **High**, **Medium**, **Low**, or **Skip**. Scores are color-coded in the results view.
-
-### 3. Research
-
-For jobs you're interested in, generate a company research report with one click. The AI produces five sections: overview, culture, recent news, key people, and market position. Research is a prerequisite for document generation.
-
-### 4. Generate
-
-Generate an ATS-optimized resume and cover letter tailored to the specific job. A Writer→Scorer→Reviewer agent pipeline iterates up to 5 times, scoring and refining each draft until it passes quality thresholds (ATS score ≥ 85%, human authenticity ≥ 80%).
-
-### 5. Track
-
-Update each job's application status as you progress: New → Applied → Phone Screen → Interview → Offer → Accepted (or Archived). Status history is recorded automatically.
-
-### 6. Export
-
-Export your tailored resume or cover letter to PDF, copy it to clipboard, or open the job's application URL directly in your browser.
+- **Search** — Create saved searches with a title, location, and optional advanced filters. Searches can run on a schedule (daily/weekly/monthly) or manually via ts-jobspy scraping Indeed and LinkedIn.
+- **Score** — New jobs are automatically scored in batches of 10 against your career profile. Fit levels: **High** (🟢), **Medium** (🟡), **Low** (🔴), or **Skip** (⚪).
+- **Research** — One-click AI company research: overview, culture, recent news, key people, and market position. Prerequisite for document generation.
+- **Generate** — A Writer→Scorer→Reviewer pipeline iterates up to 5 times, producing ATS-optimized resumes and cover letters. Targets: ATS ≥ 85%, human authenticity ≥ 80%.
+- **Track** — Move each job through application statuses: New → Applied → Phone Screen → Interview → Offer → Accepted (or Archived). Full status history with timestamps.
+- **Export** — Export tailored documents to PDF, copy to clipboard, or open the application URL in your browser.
 
 ## AI Agents
 

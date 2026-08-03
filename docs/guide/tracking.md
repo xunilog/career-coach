@@ -1,5 +1,7 @@
 # Application Tracking
 
+![Job detail with status dropdown and history](/screenshots/status-tracking.png)
+
 Track every job application through its full lifecycle.
 
 ## Statuses

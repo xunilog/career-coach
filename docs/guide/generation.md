@@ -6,10 +6,10 @@ Generate ATS-optimized, human-authentic resumes and cover letters tailored to ev
 
 Before generating documents, you need:
 
-1. **A base resume** — A comprehensive "kitchen-sink" resume with all your experience. This is the raw material the AI draws from. Build it in the **Resume Draft** editor.
-2. **Work experiences** — Your past roles with achievements and skills, entered in the Profile section.
-3. **A career profile** — Your drivers, values, and work style (built through the Career Coach chat).
-4. **Company research** — Generated per-job (see [Company Research](/guide/research)).
+1. **A career profile** — Your drivers, values, work style, and Colors/DISC type. [Build it →](/guide/profile)
+2. **Work experiences** — Your past roles with achievements and skills, structured with STAR + RACI. [Enter them →](/guide/experiences)
+3. **A reference resume** — A comprehensive "kitchen-sink" resume with all your experience. [Build it →](/guide/reference-resume)
+4. **Company research** — Generated per-job. [Learn more →](/guide/research)
 
 ## The Generation Pipeline
 
