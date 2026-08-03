@@ -1,62 +1,94 @@
-# Career Coach · Multi-Agent AI
+# Career Coach
 
-> Built with [LangGraph.js v1](https://langchain-ai.github.io/langgraphjs/) + Claude
+> Multi-agent AI career coaching — job search, resume tailoring, and interview prep.
+> Built with **Tauri 2** + **Vite** + **React** + **Mantine 9**, powered by **LangGraph.js** and Claude.
 
-A conversational career coaching system powered by three specialist AI agents
-that share a persistent state graph. Migrated to LangGraph v1.2 and LangChain v1.x
-with the new **Command API** for combined state-update + routing.
+![Main overview](./docs/public/screenshots/main-overview.png)
+
+---
+
+## Features
+
+| Capability      | Description                                                       |
+| --------------- | ----------------------------------------------------------------- |
+| **Job Search**  | Search jobs from Indeed & LinkedIn via `ts-jobspy`, with scheduling |
+| **AI Coaching** | Profile (Colors/DISC), experience extraction, and resume building |
+| **Scoring**     | ATS keyword match + human authenticity scoring via LangGraph      |
+| **Research**    | LLM-generated company culture, market position, and news          |
+| **Generation**  | Writer → Scorer → Reviewer pipeline for adapted resumes & cover letters |
+| **Tracking**    | State machine for job statuses (new, applied, interview, offer…)  |
+| **Export**      | Export to PDF, Markdown, or JSON                                  |
 
 ---
 
 ## Architecture
 
-```mermaid
-graph TD
-    START --> router
-    router -- Command(goto: profile) --> profile
-    router -- Command(goto: experience) --> experience
-    router -- Command(goto: resume) --> resume
-    router -- Command(goto: __end__) --> END
-    profile -- Command(goto: router) --> router
-    experience -- Command(goto: router) --> router
-    resume -- Command(goto: router) --> router
+```
+┌─────────────────────────────────────────────────────┐
+│                  Tauri Desktop App                    │
+│  ┌───────────────────────────────────────────────┐  │
+│  │              Vite + React + Mantine            │  │
+│  │  ┌─────────┐ ┌──────────┐ ┌────────────────┐  │  │
+│  │  │  Inbox  │ │ Results  │ │  Job Detail     │  │  │
+│  │  │         │ │          │ │  ┌────────────┐ │  │  │
+│  │  │         │ │          │ │  │ Resume Tab │ │  │  │
+│  │  │         │ │          │ │  │ CV Tab     │ │  │  │
+│  │  │         │ │          │ │  │ Research   │ │  │  │
+│  │  └─────────┘ └──────────┘ │  └────────────┘ │  │  │
+│  │                           └────────────────┘  │  │
+│  │  ┌──────────────────────────────────────────┐  │  │
+│  │  │          AI Coaches (Chat Panels)         │  │  │
+│  │  │   Profile · Experience · Resume · Job     │  │  │
+│  │  └──────────────────────────────────────────┘  │  │
+│  └───────────────────────────────────────────────┘  │
+│                         │                            │
+│  ┌──────────────────────┴────────────────────────┐  │
+│  │  Services (LangGraph, LLM calls, job-spy)      │  │
+│  │  ┌──────────┐ ┌──────────┐ ┌───────────────┐  │  │
+│  │  │ Agent    │ │ Generation│ │ Job Scorer    │  │  │
+│  │  │ Sessions │ │ Pipeline  │ │ + Researcher  │  │  │
+│  │  └──────────┘ └──────────┘ └───────────────┘  │  │
+│  └──────────────────────┬────────────────────────┘  │
+│                         │                            │
+│  ┌──────────────────────┴────────────────────────┐  │
+│  │            SQLite (via zod-sqlite)              │  │
+│  └───────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────┘
 ```
 
-### Key v1.x Features in Use
+### Tech Highlights
 
-| Feature                    | Where                    | Benefit                                                |
-| -------------------------- | ------------------------ | ------------------------------------------------------ |
-| **`Command` routing**      | All agent nodes          | Combines state updates + routing in one return value   |
-| **`ends` parameter**       | `graph.ts` → `addNode()` | Compile-time validation of valid routing destinations  |
-| **Typed `Command<"...">`** | Agent return types       | TypeScript ensures `goto` targets are valid node names |
-| **`Annotation.Root`**      | `state.ts`               | Stable v1.x state definition with typed reducers       |
-| **`CareerStateUpdate`**    | `state.ts` export        | Strongly-typed partial state updates                   |
+| Aspect                | Technology                                        |
+| --------------------- | ------------------------------------------------- |
+| Framework             | Tauri 2 (Rust shell) + Vite 8 + React 19          |
+| UI                    | Mantine 9 with Noto Sans + responsive layout      |
+| State Management      | Zustand + TanStack Query + LangGraph Annotation   |
+| AI Orchestration      | LangGraph.js v1.4 with `StateGraph` + checkpointer |
+| LLM Providers         | Anthropic, OpenAI, Mistral, DeepSeek, Google       |
+| Structured Output     | Zod v4 schemas → `withStructuredOutput`            |
+| Database              | SQLite via `@tauri-apps/plugin-sql` + `zod-sqlite` |
+| Job Data              | `ts-jobspy` (Indeed & LinkedIn scraping)           |
+| Testing               | Vitest + Testing Library + jsdom                    |
 
 ### Agents
 
-| Agent                | Role                                                 | Method                               |
-| -------------------- | ---------------------------------------------------- | ------------------------------------ |
-| **Router**           | Orchestrates the session, routes between specialists | Intent detection + `Command` routing |
-| **Profile Coach**    | Maps personality & career drivers                    | Colors method + DISC                 |
-| **Experience Coach** | Extracts rich role stories                           | STAR + RACI framework                |
-| **Resume Coach**     | Crafts job-tailored resumes                          | ATS-optimised Markdown               |
+| Agent                | Role                                                 |
+| -------------------- | ---------------------------------------------------- |
+| **Router**           | Orchestrates coaching sessions, routes between agents |
+| **Profile Coach**    | Maps personality & career drivers (Colors/DISC)      |
+| **Experience Coach** | Extracts rich role stories (STAR + RACI)             |
+| **Resume Coach**     | Crafts ATS-optimised reference resume                |
+| **Job Chat**         | Answers questions about a specific job listing       |
 
-### Shared State (`CareerState`)
+### Generation Pipeline
 
-```typescript
-{
-  messages: BaseMessage[]           // Conversation history (messagesStateReducer)
-  activeAgent: AgentName            // Display label for CLI UI
-  profile: Partial<ColorProfile>    // Colors/DISC output (merged reducer)
-  experiences: Experience[]         // Structured past roles (merge-by-id reducer)
-  targetJob: string                 // Current job target
-  resumeDraft: string               // Resume in Markdown
-  agentTurnCount: number            // Turns since last handoff
-}
+```
+Writer ──→ Scorer (ATS) ──→ Reviewer (Human Authenticity)
+   ↑                            │
+   └────────── re-draft ────────┘  (up to 5 iterations)
 ```
 
-State is **persisted** via LangGraph's `MemorySaver` checkpointer —
-sessions can be resumed with `--thread <id>`.
+Targets: ATS ≥ 85%, Human ≥ 80%. Best draft across all iterations is kept.
 
 ---
 
@@ -64,8 +96,8 @@ sessions can be resumed with `--thread <id>`.
 
 ### Prerequisites
 
-- **Node.js 20+** (required by LangChain/LangGraph v1)
-- An Anthropic API key
+- **Node.js 20+** and **Rust** (for Tauri)
+- An LLM provider API key (Anthropic, OpenAI, Mistral, DeepSeek, or Google)
 
 ### Install
 
@@ -75,81 +107,22 @@ npm install
 
 ### Configure
 
+Set at least one provider API key — either as an environment variable or in Settings within the app:
+
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...
-```
-
-Or create a `.env` file:
-
-```
-ANTHROPIC_API_KEY=sk-ant-...
+# or: OPENAI_API_KEY, MISTRAL_API_KEY, DEEPSEEK_API_KEY, GOOGLE_API_KEY
 ```
 
 ### Run
 
 ```bash
-# Start a new session
-npm start
+# Development (Vite dev server + Tauri window)
+npm run dev
 
-# Resume an existing session
-npm start -- --thread session-1234567890
+# Or launch Tauri directly
+npm run tauri dev
 ```
-
----
-
-## Migration Notes (v0 → v1)
-
-This project was migrated from `@langchain/langgraph@^0.2.0` / `@langchain/core@^0.3.0`
-to `@langchain/langgraph@^1.2.0` / `@langchain/core@^1.1.0`. Key changes:
-
-| Area              | v0.x                                   | v1.x                                             |
-| ----------------- | -------------------------------------- | ------------------------------------------------ |
-| Routing           | `addConditionalEdges` + edge functions | `Command({ update, goto })` in nodes             |
-| Node registration | `.addNode(name, fn)`                   | `.addNode(name, fn, { ends: [...] })`            |
-| Return types      | `Promise<Partial<CareerState>>`        | `Promise<Command<"nodeName">>`                   |
-| State types       | Inline reducers                        | Explicit typed reducers with `CareerStateUpdate` |
-
----
-
-## Extending the System
-
-### Add a new agent
-
-1. Create `src/agents/myAgent.ts` returning `Command<"router">`:
-
-   ```typescript
-   import { Command } from "@langchain/langgraph";
-   import type { CareerState } from "../state.js";
-   import { Nodes } from "../state.js";
-
-   export async function myAgent(state: CareerState): Promise<Command<"router">> {
-     // ... invoke LLM, return state updates + routing
-     return new Command({
-       update: { messages: [response], activeAgent: "router" },
-       goto: Nodes.Router,
-     });
-   }
-   ```
-
-2. Add to `src/graph.ts`:
-
-   ```typescript
-   graph.addNode("myagent", myAgent, { ends: [Nodes.Router, END] });
-   ```
-
-3. Add `"myagent"` to the `AgentName` union in `src/state.ts`.
-
-4. Update router's system prompt to know about the new agent.
-
-### Suggested additional agents
-
-| Agent                  | Purpose                                                          |
-| ---------------------- | ---------------------------------------------------------------- |
-| **Interview Coach**    | Prepares STAR answers for interview questions                    |
-| **Salary Coach**       | Researches market rates and negotiation tactics                  |
-| **LinkedIn Coach**     | Rewrites the LinkedIn profile to match the resume                |
-| **Cover Letter Coach** | Drafts tailored cover letters                                    |
-| **Gap Analyser**       | Identifies skill gaps vs target role and suggests learning paths |
 
 ---
 
@@ -157,35 +130,75 @@ to `@langchain/langgraph@^1.2.0` / `@langchain/core@^1.1.0`. Key changes:
 
 ```
 src/
-├── state.ts                  # Shared CareerState + types (Annotation.Root)
-├── graph.ts                  # StateGraph with Command-based routing
-├── index.ts                  # CLI entrypoint
-├── demo-ui.jsx               # React demo UI component
-└── agents/
-    ├── routerAgent.ts        # Orchestrator + intent router
-    ├── profileAgent.ts       # Colors/DISC profiler
-    ├── experienceAgent.ts    # Experience extractor
-    └── resumeAgent.ts        # Resume builder
+├── renderer/                  # React UI (Vite renderer)
+│   ├── App.tsx                # Root component + router
+│   ├── components/
+│   │   ├── chat/              # AI coach chat panels
+│   │   ├── editors/           # Profile, experience, resume editors
+│   │   ├── inbox/             # Saved job listings inbox
+│   │   ├── job-detail/        # Job detail with tabs (resume, CV, research)
+│   │   ├── layout/            # AppShell, navbar, API key gate
+│   │   ├── nav/               # Navigation panel with saved searches
+│   │   ├── results/           # Search results table
+│   │   ├── search/            # Search creation modal
+│   │   └── shared/            # Reusable UI components
+│   ├── hooks/                 # TanStack Query hooks + custom hooks
+│   ├── stores/                # Zustand stores (career, job search, layout)
+│   └── theme.ts               # Mantine theme config
+├── services/                  # Backend services (runs in Tauri webview)
+│   ├── database.ts            # SQLite connection via @tauri-apps/plugin-sql
+│   ├── agent-session.ts       # LangGraph career coaching sessions
+│   ├── generation-graph.ts    # Resume/CV generation pipeline (LangGraph)
+│   ├── job-service.ts         # Job CRUD + queries
+│   ├── search-service.ts      # Search definitions CRUD
+│   ├── jobspy-client.ts       # ts-jobspy wrapper
+│   ├── job-scorer.ts          # LLM-based job fit scoring
+│   ├── company-researcher.ts  # LLM company research
+│   ├── scheduler.ts           # Scheduled search execution
+│   ├── status-service.ts      # Job status state machine
+│   └── sql-checkpointer.ts    # LangGraph checkpointer backed by SQLite
+└── shared/                    # Shared types, state, and utilities
+    ├── state.ts               # CareerState (LangGraph Annotation)
+    ├── types.ts               # Core TypeScript types
+    ├── db-migrations.ts       # Database schema + migrations (zod-sqlite)
+    ├── db-schema.ts           # Zod validation schemas per table
+    ├── llm-provider.ts        # Multi-provider LLM factory
+    └── agents/                # Agent implementations (shared)
 ```
 
 ---
 
-## Data Flow Example
+## Data Flow
+
+### Job Search
 
 ```
-User: "I want to work on my resume for a Product Manager role at Stripe"
-  │
-  ▼
-[router] → detects resume intent
-         → returns Command({ update: {...}, goto: "resume" })
-  │
-[resumeAgent] → asks for JD → user pastes JD
-  │
-[resumeAgent] → maps experiences to JD → drafts resume
-              → returns Command({ update: {...}, goto: "router" })
-  │
-[resumeAgent] → user approves
-              → returns Command({ update: { resumeDraft, activeAgent: "router" }, goto: "router" })
-  │
-[router] → "Your resume is ready! Want to also prep for the interview?"
+SearchModal → search-service → jobspy-client → ts-jobspy → Indeed/LinkedIn
+                  │                                              │
+                  ▼                                              ▼
+            SQLite (searches)                            SQLite (jobs)
+                  │                                              │
+                  ▼                                              ▼
+            NavPanel ← stats                             InboxView / ResultsView
+```
+
+### AI Coaching
+
+```
+CoachChatPanel → agent-session → LangGraph StateGraph
+                    │                    │
+                    ▼                    ▼
+              SQLite (career data)   LLM Provider (Claude/GPT/etc.)
+```
+
+### Document Generation
+
+```
+JobDetailView → generation-graph
+                    │
+                    ▼
+     Writer → Scorer → Reviewer (loop up to 5×)
+                    │
+                    ▼
+              SQLite (adapted_resumes / cover_letters)
 ```
