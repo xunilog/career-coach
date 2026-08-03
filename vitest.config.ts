@@ -8,6 +8,7 @@ export default defineConfig({
     },
   },
   test: {
+    setupFiles: ["./src/test-setup.ts"],
     // Default environment is node (for service tests).
     // Renderer tests override to jsdom via @vitest-environment docblock.
   },

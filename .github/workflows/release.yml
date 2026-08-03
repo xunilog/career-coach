@@ -7,6 +7,10 @@ on:
         description: "Release title"
         required: true
         type: string
+      tag:
+        description: "Git tag (e.g. v1.0.0)"
+        required: true
+        type: string
       issue_numbers:
         description: "Issue numbers (comma-separated, e.g. #12, #34)"
         required: false
@@ -126,6 +130,7 @@ jobs:
 
       - uses: softprops/action-gh-release@v3
         with:
+          tag_name: ${{ inputs.tag }}
           name: ${{ inputs.title }}
           body: ${{ steps.body.outputs.body }}
           files: artifacts/**/*
