@@ -89,7 +89,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: build-${{ matrix.target }}
-          path: src-tauri/target/${{ matrix.target }}/release/bundle/
+          path: src-tauri/target/${{ matrix.target }}/release/bundle/${{ matrix.ext }}/*.${{ matrix.ext }}
 
   release:
     needs: build
@@ -137,6 +137,6 @@ jobs:
           tag_name: ${{ steps.version.outputs.tag }}
           name: ${{ inputs.title }}
           body: ${{ steps.body.outputs.body }}
-          files: artifacts/**/*
+          files: artifacts/*
           draft: false
           prerelease: false

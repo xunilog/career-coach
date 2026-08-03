@@ -2,6 +2,7 @@
   "name": "career-coach",
   "version": "0.1.0",
   "description": "Multi-agent career coaching system with Tauri + Vite + Mantine UI",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
