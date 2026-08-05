@@ -128,7 +128,7 @@ npm run tauri dev
 
 ## Installing (pre-built packages)
 
-Pre-built packages are available on the [Releases](https://github.com/YannC26/find-my-job/releases) page.
+Pre-built packages are available on the [Releases](https://github.com/xunilog/career-coach/releases/) page.
 
 > **Note:** The packages are **not notarized** — neither Apple notarization (macOS) nor Authenticode signing (Windows) is applied. Your OS will show a security warning on first launch.
 
