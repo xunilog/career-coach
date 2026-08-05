@@ -45,8 +45,8 @@
 │  ┌──────────────────────┴────────────────────────┐  │
 │  │  Services (LangGraph, LLM calls, job-spy)     │  │
 │  │  ┌──────────┐ ┌──────────┐ ┌───────────────┐  │  │
-│  │  │ Agent    │ │ Generation│ │ Job Scorer   │  │  │
-│  │  │ Sessions │ │ Pipeline  │ │ + Researcher │  │  │
+│  │  │ Agent    │ │Generation│ │  Job Scorer   │  │  │
+│  │  │ Sessions │ │Pipeline  │ │  + Researcher │  │  │
 │  │  └──────────┘ └──────────┘ └───────────────┘  │  │
 │  └──────────────────────┬────────────────────────┘  │
 │                         │                           │
